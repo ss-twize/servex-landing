@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { DemoBookingProvider } from "@/components/ui/DemoBookingContext";
 import DemoBooking from "@/components/ui/DemoBooking";
+import PageWatermark from "@/components/ui/PageWatermark";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin", "latin-ext"],
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ru" className={`${spaceGrotesk.variable} ${inter.variable} scroll-smooth`}>
       <body className="bg-sx-deep text-sx-cream font-body">
         <DemoBookingProvider>
+          <PageWatermark />
           <Header />
           {children}
           <Footer />
