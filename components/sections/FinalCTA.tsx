@@ -27,20 +27,19 @@ export default function FinalCTA() {
         <div className="relative z-10 section-container text-center">
           <AnimateOnScroll>
             <h2 className="text-4xl md:text-7xl font-heading font-extrabold text-sx-cream leading-tight">
-              Хватит терять выручку
+              Хватит терять клиентов и выручку
             </h2>
           </AnimateOnScroll>
 
           <AnimateOnScroll delay={0.1}>
             <p className="text-3xl md:text-5xl font-heading font-bold text-sx-accent mt-4 leading-tight">
-              Начните её растить
+              Начните зарабатывать больше
             </p>
           </AnimateOnScroll>
 
           <AnimateOnScroll delay={0.15}>
             <p className="text-lg md:text-xl text-sx-secondary mt-6 max-w-2xl mx-auto">
-              Каждый пропущенный звонок и неотвеченное сообщение — это потерянные деньги.
-              СЕРВЕКС работает 24/7, чтобы ни один клиент не ушёл без записи.
+              Пора начать зарабатывать больше на тех же обращениях. СЕРВЕКС работает 24/7, чтобы ни один клиент не ушёл без записи.
             </p>
           </AnimateOnScroll>
 

@@ -104,9 +104,16 @@ export default function Hero() {
               animate={stage >= 2 ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
             >
-              Берёт на себя общение с клиентами, запись, переносы и
-              отмены&nbsp;&mdash; чтобы бизнес перестал терять выручку на первой
-              линии сервиса
+              Система, которая отвечает клиентам, записывает на услуги и управляет расписанием — без пропущенных обращений и без человеческого фактора.
+            </motion.p>
+
+            <motion.p
+              className="text-base md:text-lg text-sx-secondary mt-4 max-w-lg leading-relaxed"
+              initial={{ opacity: 0, y: 24 }}
+              animate={stage >= 2 ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
+              Работает 24/7, стоит дешевле администратора и помогает бизнесу зарабатывать больше на тех же клиентах.
             </motion.p>
 
             <motion.div
@@ -129,7 +136,7 @@ export default function Hero() {
               animate={stage >= 2 ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.58 }}
             >
-              {["Запуск за 1 день", "Прозрачная аналитика", "Работает 24/7"].map(
+              {["Без пропущенных обращений", "Работает 24/7", "Дешевле администратора"].map(
                 (item) => (
                   <span key={item} className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-sx-accent" />
