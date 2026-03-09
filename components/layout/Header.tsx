@@ -1,105 +1,80 @@
 "use client";
-import { useState, useEffect } from "react";
-import Button from "@/components/ui/Button";
-import MobileMenu from "./MobileMenu";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 const navItems = [
-  { label: "Продукт", href: "#solution" },
-  { label: "Калькулятор", href: "#calculator" },
-  { label: "Возможности", href: "#features" },
-  { label: "Тарифы", href: "#pricing" },
-  { label: "Контакты", href: "#contacts" },
+  { name: "Продукт", url: "#solution" },
+  { name: "Тарифы", url: "#pricing" },
+  { name: "Запуск", url: "#launch" },
+  { name: "Вопросы", url: "#faq" },
+  { name: "Контакты", url: "/contacts" },
 ];
 
 export default function Header() {
+  const [activeTab, setActiveTab] = useState(navItems[0].name);
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const el = document.querySelector(href);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+  const handleClick = (e: React.MouseEvent, item: (typeof navItems)[0]) => {
+    setActiveTab(item.name);
+    if (item.url.startsWith("#")) {
+      e.preventDefault();
+      const el = document.querySelector(item.url);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   return (
-    <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          scrolled
-            ? "bg-sx-deep/90 backdrop-blur-lg border-b border-sx-border/50 shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
-            : "bg-transparent"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          {/* Logo */}
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="font-heading text-xl font-bold text-sx-cream tracking-tight flex items-center gap-1"
-          >
-            СЕРВЕКС
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-sx-accent" />
-          </a>
+    <header className="fixed top-0 left-1/2 -translate-x-1/2 z-50 pt-6">
+      <nav className="flex items-center gap-1 bg-sx-deep/60 border border-sx-border/50 backdrop-blur-xl py-1.5 px-1.5 rounded-full shadow-lg">
+        {/* Logo */}
+        <Link
+          href="/"
+          className="px-5 py-2 font-heading font-bold text-sm text-sx-accent tracking-wide"
+        >
+          СЕРВЕКС
+        </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                className="font-body text-sm text-sx-muted hover:text-sx-cream transition-colors"
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-
-          {/* Desktop CTA */}
-          <div className="hidden md:block">
-            <Button href="#contacts" size="default">
-              Записаться на демо
-            </Button>
-          </div>
-
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden text-sx-cream hover:text-sx-accent transition-colors"
-            onClick={() => setMenuOpen(true)}
-            aria-label="Открыть меню"
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+        {/* Nav items */}
+        {navItems.map((item) => {
+          const isActive = activeTab === item.name;
+          return (
+            <Link
+              key={item.name}
+              href={item.url}
+              onClick={(e) => handleClick(e, item)}
+              className={`relative px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+                isActive
+                  ? "text-sx-accent"
+                  : "text-sx-secondary hover:text-sx-cream"
+              }`}
             >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
-    </>
+              {item.name}
+              {isActive && (
+                <motion.div
+                  layoutId="tubelight"
+                  className="absolute inset-0 w-full bg-sx-accent/5 rounded-full -z-10"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                >
+                  {/* Tubelight glow effect */}
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-sx-accent rounded-t-full">
+                    <div className="absolute w-12 h-6 bg-sx-accent/20 rounded-full blur-md -top-2 -left-2" />
+                    <div className="absolute w-8 h-6 bg-sx-accent/20 rounded-full blur-md -top-1" />
+                    <div className="absolute w-4 h-4 bg-sx-accent/20 rounded-full blur-sm top-0 left-2" />
+                  </div>
+                </motion.div>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+    </header>
   );
 }

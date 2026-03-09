@@ -8,33 +8,71 @@ function Orb() {
   const groupRef = useRef<THREE.Group>(null);
   const wireRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.PointLight>(null);
+  const coreMatRef = useRef<THREE.MeshStandardMaterial>(null);
+  const wireMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const wire2MatRef = useRef<THREE.MeshBasicMaterial>(null);
   const mouse = useRef({ x: 0, y: 0 });
+  const mouseProximity = useRef(0); // 0 = far, 1 = directly over
   const { viewport } = useThree();
 
   /* Track pointer across the canvas */
   useFrame(({ pointer, clock }) => {
     const t = clock.getElapsedTime();
 
-    // Smooth mouse follow
-    mouse.current.x += (pointer.x * 0.3 - mouse.current.x) * 0.05;
-    mouse.current.y += (pointer.y * 0.2 - mouse.current.y) * 0.05;
+    // Smooth mouse follow — 3x more responsive
+    mouse.current.x += (pointer.x * 0.9 - mouse.current.x) * 0.1;
+    mouse.current.y += (pointer.y * 0.6 - mouse.current.y) * 0.1;
+
+    // Calculate mouse proximity to center (0..1, 1 = directly over orb)
+    const dist = Math.sqrt(pointer.x * pointer.x + pointer.y * pointer.y);
+    const targetProximity = Math.max(0, 1 - dist * 1.2);
+    mouseProximity.current += (targetProximity - mouseProximity.current) * 0.08;
+    const prox = mouseProximity.current;
 
     if (groupRef.current) {
-      // Slow auto-rotation + mouse offset
-      groupRef.current.rotation.y = t * 0.08 + mouse.current.x * 0.5;
-      groupRef.current.rotation.x = Math.sin(t * 0.05) * 0.1 + mouse.current.y * 0.3;
+      // Slow auto-rotation + STRONG mouse offset (5x original)
+      groupRef.current.rotation.y = t * 0.08 + mouse.current.x * 2.5;
+      groupRef.current.rotation.x =
+        Math.sin(t * 0.05) * 0.1 + mouse.current.y * 1.5;
       groupRef.current.rotation.z = Math.sin(t * 0.03) * 0.05;
+
+      // Scale pulse — breathes faster when mouse is near
+      const breathSpeed = 1.2 + prox * 3.0;
+      const breathAmp = 0.02 + prox * 0.06;
+      groupRef.current.scale.setScalar(1 + Math.sin(t * breathSpeed) * breathAmp);
     }
 
-    // Wireframe counter-rotation for depth
+    // Wireframe counter-rotation — faster with mouse
     if (wireRef.current) {
-      wireRef.current.rotation.y = -t * 0.04;
-      wireRef.current.rotation.x = -t * 0.02;
+      wireRef.current.rotation.y = -t * (0.04 + prox * 0.15);
+      wireRef.current.rotation.x = -t * (0.02 + prox * 0.08);
     }
 
-    // Pulsing glow
+    // Pulsing glow — intensifies on hover
     if (glowRef.current) {
-      glowRef.current.intensity = 1.5 + Math.sin(t * 1.2) * 0.4;
+      glowRef.current.intensity =
+        1.5 + Math.sin(t * 1.2) * 0.4 + prox * 2.5;
+    }
+
+    // Color shift: brighten emissive when mouse is near
+    if (wireMatRef.current) {
+      const greenIntensity = 0.35 + prox * 0.4;
+      wireMatRef.current.opacity = greenIntensity;
+      wireMatRef.current.color.setRGB(
+        prox * 0.15,
+        0.94 + prox * 0.06,
+        0.56 + prox * 0.2
+      );
+    }
+
+    if (wire2MatRef.current) {
+      wire2MatRef.current.opacity = 0.12 + prox * 0.18;
+    }
+
+    // Core emissive brightens on hover
+    if (coreMatRef.current) {
+      coreMatRef.current.emissive.setRGB(0, prox * 0.15, prox * 0.08);
+      coreMatRef.current.emissiveIntensity = prox * 2;
     }
   });
 
@@ -69,15 +107,19 @@ function Orb() {
       {/* Dark solid core */}
       <mesh geometry={sphereGeo}>
         <meshStandardMaterial
+          ref={coreMatRef}
           color="#040F0F"
           roughness={0.7}
           metalness={0.3}
+          emissive="#000000"
+          emissiveIntensity={0}
         />
       </mesh>
 
       {/* Green energy wireframe */}
       <mesh ref={wireRef} geometry={icoGeo}>
         <meshBasicMaterial
+          ref={wireMatRef}
           color="#00F090"
           wireframe
           transparent
@@ -88,6 +130,7 @@ function Orb() {
       {/* Secondary finer wireframe for depth */}
       <mesh geometry={icoGeo} rotation={[0.4, 0.3, 0.1]}>
         <meshBasicMaterial
+          ref={wire2MatRef}
           color="#00F090"
           wireframe
           transparent
