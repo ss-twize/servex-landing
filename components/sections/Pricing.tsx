@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import SectionWrapper from "@/components/ui/SectionWrapper";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Button from "@/components/ui/Button";
 import { useDemoBooking } from "@/components/ui/DemoBookingContext";
@@ -14,8 +13,8 @@ const periods = [
 
 const agentPricing: Record<number, { price: number; savings?: string }> = {
   1: { price: 25000 },
-  3: { price: 22000, savings: "Экономия 9 000 \u20BD за период" },
-  6: { price: 21000, savings: "Экономия 24 000 \u20BD за период" },
+  3: { price: 22000, savings: "9 000 ₽ за период" },
+  6: { price: 21000, savings: "24 000 ₽ за период" },
 };
 
 const agentFeatures = [
@@ -76,241 +75,211 @@ export default function Pricing() {
   const pricing = agentPricing[selectedPeriod];
 
   return (
-    <SectionWrapper id="pricing" className="overflow-hidden">
-      {/* Background word */}
-      <div
-        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
-        aria-hidden="true"
-      >
-        <span
-          className="font-heading font-black text-sx-cream whitespace-nowrap"
-          style={{ fontSize: "8vw", opacity: 0.025 }}
-        >
-          ТАРИФЫ
+    <section id="pricing" className="py-24 md:py-32 px-6 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <AnimateOnScroll>
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center">
+            Тарифы
+          </h2>
+        </AnimateOnScroll>
+
+        {/* Billing toggle */}
+        <AnimateOnScroll delay={0.1}>
+          <div className="flex justify-center mt-10">
+            <div className="inline-flex bg-sx-card border border-sx-border rounded-full p-1 gap-1">
+              {periods.map((p) => (
+                <button
+                  key={p.months}
+                  onClick={() => setSelectedPeriod(p.months)}
+                  className={`relative px-5 py-2 rounded-full text-sm font-medium transition-colors duration-200 cursor-pointer ${
+                    selectedPeriod === p.months
+                      ? "text-sx-deep"
+                      : "text-sx-muted hover:text-sx-cream"
+                  }`}
+                >
+                  {selectedPeriod === p.months && (
+                    <motion.div
+                      layoutId="pricing-pill"
+                      className="absolute inset-0 bg-sx-accent rounded-full"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{p.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </AnimateOnScroll>
+
+        {/* Mobile: stacked cards (Agent first) */}
+        <div className="lg:hidden mt-14 space-y-6">
+          {/* Agent card — mobile */}
+          <AgentCard
+            pricing={pricing}
+            selectedPeriod={selectedPeriod}
+            openBooking={openBooking}
+          />
+          {/* Enterprise card — mobile */}
+          <EnterpriseCard openBooking={openBooking} />
+          {/* Voice Agent card — mobile */}
+          <VoiceAgentCard />
+        </div>
+
+        {/* Desktop: sticky stacking cards */}
+        <div className="hidden lg:block mt-14 min-h-[200vh] relative">
+          {/* Card 1 — Voice Agent (appears first, gets pushed under) */}
+          <div className="sticky top-24 z-10 pb-4">
+            <VoiceAgentCard />
+          </div>
+
+          {/* Card 2 — Enterprise (appears second) */}
+          <div className="sticky top-24 z-20 pb-4">
+            <EnterpriseCard openBooking={openBooking} />
+          </div>
+
+          {/* Card 3 — Agent (appears last, sits on TOP) */}
+          <div className="sticky top-24 z-30 pb-4">
+            <AgentCard
+              pricing={pricing}
+              selectedPeriod={selectedPeriod}
+              openBooking={openBooking}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AgentCard({
+  pricing,
+  selectedPeriod,
+  openBooking,
+}: {
+  pricing: { price: number; savings?: string };
+  selectedPeriod: number;
+  openBooking: () => void;
+}) {
+  return (
+    <div className="max-w-xl mx-auto bg-sx-card border border-sx-accent/50 rounded-2xl p-8 md:p-10 shadow-[0_0_40px_rgba(0,240,144,0.1)]">
+      <h3 className="font-heading text-2xl font-bold text-sx-cream">Агент</h3>
+      <p className="text-sx-muted text-sm mt-1">
+        Цифровой администратор для вашего бизнеса
+      </p>
+
+      {/* Price */}
+      <div className="mt-6">
+        <div className="flex items-baseline gap-2">
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={selectedPeriod}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="font-heading text-4xl md:text-5xl font-extrabold text-sx-cream"
+            >
+              {formatPrice(pricing.price)} &#8381;
+            </motion.span>
+          </AnimatePresence>
+          <span className="text-sx-muted text-sm">/ мес</span>
+        </div>
+        <AnimatePresence mode="wait">
+          {pricing.savings && (
+            <motion.div
+              key={pricing.savings}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-2"
+            >
+              <span className="bg-sx-accent/10 text-sx-accent text-sm rounded-full px-4 py-1 inline-block">
+                {pricing.savings}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Features */}
+      <ul className="mt-6 space-y-3">
+        {agentFeatures.map((f) => (
+          <li key={f} className="flex items-start gap-3">
+            <CheckIcon />
+            <span className="text-sx-cream text-sm">{f}</span>
+          </li>
+        ))}
+      </ul>
+
+      {/* Notes */}
+      <div className="mt-6 pt-6 border-t border-sx-border space-y-2">
+        {agentNotes.map((n) => (
+          <p key={n} className="text-sm text-sx-muted">{n}</p>
+        ))}
+      </div>
+
+      <div className="mt-8">
+        <Button onClick={openBooking} className="w-full">
+          Записаться на демо
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function VoiceAgentCard() {
+  return (
+    <div className="max-w-xl mx-auto bg-sx-card border border-sx-border rounded-2xl p-8 md:p-10 shadow-2xl">
+      <div className="flex items-center gap-3">
+        <h3 className="font-heading text-2xl font-bold text-sx-cream">
+          Голосовой агент
+        </h3>
+        <span className="bg-sx-accent/10 text-sx-accent text-xs px-3 py-1 rounded-full">
+          Скоро
+        </span>
+      </div>
+      <p className="text-sx-muted text-sm mt-1">
+        Голосовой ассистент для входящих звонков
+      </p>
+
+      <ul className="mt-6 space-y-3">
+        {voiceFeatures.map((f) => (
+          <li key={f} className="flex items-start gap-3">
+            <CheckIcon muted />
+            <span className="text-sx-muted text-sm">{f}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function EnterpriseCard({ openBooking }: { openBooking: () => void }) {
+  return (
+    <div className="max-w-xl mx-auto bg-sx-card border border-sx-border rounded-2xl p-8 md:p-10 shadow-2xl">
+      <h3 className="font-heading text-2xl font-bold text-sx-cream">Enterprise</h3>
+      <p className="text-sx-muted text-sm mt-1">Для сетей и крупных компаний</p>
+
+      <div className="mt-6">
+        <span className="font-heading text-3xl font-bold text-sx-cream">
+          По запросу
         </span>
       </div>
 
-      <AnimateOnScroll>
-        <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center relative z-10">
-          Тарифы
-        </h2>
-      </AnimateOnScroll>
+      <ul className="mt-6 space-y-3">
+        {enterpriseFeatures.map((f) => (
+          <li key={f} className="flex items-start gap-3">
+            <CheckIcon />
+            <span className="text-sx-cream text-sm">{f}</span>
+          </li>
+        ))}
+      </ul>
 
-      {/* Billing toggle — only shown above the central Agent card */}
-      <AnimateOnScroll delay={0.1}>
-        <div className="flex justify-center mt-10 relative z-10">
-          <div className="inline-flex bg-sx-card border border-sx-border rounded-full p-1 gap-1">
-            {periods.map((p) => (
-              <button
-                key={p.months}
-                onClick={() => setSelectedPeriod(p.months)}
-                className={`relative px-5 py-2 rounded-full text-sm font-medium transition-colors duration-200 cursor-pointer ${
-                  selectedPeriod === p.months
-                    ? "text-sx-deep"
-                    : "text-sx-muted hover:text-sx-cream"
-                }`}
-              >
-                {selectedPeriod === p.months && (
-                  <motion.div
-                    layoutId="pricing-pill"
-                    className="absolute inset-0 bg-sx-accent rounded-full"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">{p.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </AnimateOnScroll>
-
-      {/* Fan layout — 3 cards */}
-      <div className="mt-14 relative z-10 flex flex-col lg:flex-row items-center lg:items-end justify-center gap-0 lg:gap-4">
-
-        {/* Voice Agent — left, tilted */}
-        <motion.div
-          className="w-full max-w-sm lg:max-w-xs"
-          initial={{ opacity: 0, x: -40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          style={{ transformOrigin: "bottom center" }}
-          whileHover={{ rotate: 0, scale: 0.97, opacity: 0.9 }}
-          animate={{ rotate: -2, scale: 0.93, opacity: 0.88 }}
-        >
-          <div
-            className="relative bg-sx-card border border-sx-border rounded-2xl p-8"
-            style={{ transform: "translateY(20px)" }}
-          >
-            {/* Badge */}
-            <div className="absolute top-4 right-4">
-              <span className="bg-sx-accent text-sx-deep text-xs font-heading font-semibold px-3 py-1 rounded-full">
-                Скоро
-              </span>
-            </div>
-
-            <h3 className="font-heading text-2xl font-bold text-sx-cream mt-2">
-              Голосовой агент
-            </h3>
-            <p className="text-sx-muted text-sm mt-1">
-              Голосовой ассистент для входящих звонков
-            </p>
-
-            <ul className="mt-6 space-y-3">
-              {voiceFeatures.map((f) => (
-                <li key={f} className="flex items-start gap-3">
-                  <CheckIcon muted />
-                  <span className="text-sx-muted text-sm">{f}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8">
-              <Button variant="secondary" className="w-full">
-                Узнать первым
-              </Button>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Agent — center, dominant */}
-        <motion.div
-          className="w-full max-w-sm relative z-20 lg:-mx-2"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {/* Green top border line */}
-          <div className="h-0.5 w-full bg-sx-accent rounded-t-sm" />
-
-          <div
-            className="relative bg-sx-card rounded-b-2xl p-8"
-            style={{
-              border: "1px solid rgba(1,222,130,0.5)",
-              borderTop: "none",
-              boxShadow:
-                "0 4px 6px rgba(1,222,130,0.05), 0 10px 15px rgba(1,222,130,0.08), 0 20px 25px rgba(1,222,130,0.06), 0 40px 55px rgba(1,222,130,0.04)",
-            }}
-          >
-            {/* Badge */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-sx-accent text-sx-deep text-xs font-heading font-semibold px-4 py-1 rounded-full">
-                Популярный
-              </span>
-            </div>
-
-            <h3 className="font-heading text-2xl font-bold text-sx-cream mt-2">
-              Агент
-            </h3>
-            <p className="text-sx-muted text-sm mt-1">
-              Цифровой администратор для вашего бизнеса
-            </p>
-
-            {/* Price */}
-            <div className="mt-6">
-              <div className="flex items-baseline gap-2">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={selectedPeriod}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                    className="font-heading text-4xl font-bold text-sx-cream"
-                  >
-                    {formatPrice(pricing.price)} &#8381;
-                  </motion.span>
-                </AnimatePresence>
-                <span className="text-sx-muted text-sm">/ мес</span>
-              </div>
-              <AnimatePresence mode="wait">
-                {pricing.savings && (
-                  <motion.p
-                    key={pricing.savings}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="text-sx-accent text-sm mt-2 font-medium"
-                  >
-                    {pricing.savings}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Features */}
-            <ul className="mt-6 space-y-3">
-              {agentFeatures.map((f) => (
-                <li key={f} className="flex items-start gap-3">
-                  <CheckIcon />
-                  <span className="text-sx-cream text-sm">{f}</span>
-                </li>
-              ))}
-            </ul>
-
-            {/* Notes */}
-            <div className="mt-6 pt-6 border-t border-sx-border space-y-2">
-              {agentNotes.map((n) => (
-                <p key={n} className="text-sx-muted text-xs">
-                  {n}
-                </p>
-              ))}
-            </div>
-
-            <div className="mt-8">
-              <Button onClick={openBooking} className="w-full">
-                Записаться на демо
-              </Button>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Enterprise — right, tilted */}
-        <motion.div
-          className="w-full max-w-sm lg:max-w-xs"
-          initial={{ opacity: 0, x: 40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          style={{ transformOrigin: "bottom center" }}
-          whileHover={{ rotate: 0, scale: 0.97, opacity: 0.9 }}
-          animate={{ rotate: 2, scale: 0.93, opacity: 0.88 }}
-        >
-          <div
-            className="relative bg-sx-card border border-sx-border rounded-2xl p-8"
-            style={{ transform: "translateY(20px)" }}
-          >
-            <h3 className="font-heading text-2xl font-bold text-sx-cream mt-2">
-              Enterprise
-            </h3>
-            <p className="text-sx-muted text-sm mt-1">
-              Для сетей и крупных компаний
-            </p>
-
-            <div className="mt-6">
-              <span className="font-heading text-3xl font-bold text-sx-cream">
-                По запросу
-              </span>
-            </div>
-
-            <ul className="mt-6 space-y-3">
-              {enterpriseFeatures.map((f) => (
-                <li key={f} className="flex items-start gap-3">
-                  <CheckIcon />
-                  <span className="text-sx-cream text-sm">{f}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8">
-              <Button variant="secondary" onClick={openBooking} className="w-full">
-                Связаться
-              </Button>
-            </div>
-          </div>
-        </motion.div>
+      <div className="mt-8">
+        <Button variant="secondary" onClick={openBooking} className="w-full">
+          Связаться
+        </Button>
       </div>
-    </SectionWrapper>
+    </div>
   );
 }
