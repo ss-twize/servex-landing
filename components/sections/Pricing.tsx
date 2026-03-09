@@ -136,11 +136,11 @@ export default function Pricing() {
         </AnimateOnScroll>
 
         {/* 3 cards in one row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-14 items-stretch">
-          {/* Card 1: Начало */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-14 items-start">
+          {/* Card 1: Контроль */}
           <AnimateOnScroll delay={0}>
             <div
-              className="h-full bg-sx-card border border-sx-accent/50 rounded-2xl p-8 shadow-[0_0_40px_rgba(0,240,144,0.1)] flex flex-col relative overflow-hidden"
+              className="bg-sx-card border border-sx-accent/50 rounded-2xl p-8 shadow-[0_0_40px_rgba(0,240,144,0.1)] flex flex-col relative overflow-hidden"
               onMouseMove={spot1.handleMouseMove}
               onMouseEnter={() => spot1.setIsHovered(true)}
               onMouseLeave={() => spot1.setIsHovered(false)}
@@ -154,7 +154,7 @@ export default function Pricing() {
                 />
               )}
               <h3 className="relative z-10 font-heading text-2xl font-bold text-sx-cream">
-                Агент
+                Контроль
               </h3>
               <p className="text-sx-muted text-sm mt-1">
                 Полноценная замена первой линии сервиса
@@ -224,7 +224,7 @@ export default function Pricing() {
           {/* Card 2: Развитие */}
           <AnimateOnScroll delay={0.1}>
             <div
-              className="h-full bg-sx-card border border-sx-border rounded-2xl p-8 flex flex-col relative overflow-hidden"
+              className="bg-sx-card border border-sx-border rounded-2xl p-8 flex flex-col relative overflow-hidden"
               onMouseMove={spot2.handleMouseMove}
               onMouseEnter={() => spot2.setIsHovered(true)}
               onMouseLeave={() => spot2.setIsHovered(false)}
@@ -258,7 +258,7 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <div className="mt-auto pt-8">
+              <div className="mt-8">
                 <Button variant="secondary" disabled className="w-full">
                   Узнать первым
                 </Button>
@@ -269,7 +269,7 @@ export default function Pricing() {
           {/* Card 3: Масштабирование */}
           <AnimateOnScroll delay={0.2}>
             <div
-              className="h-full bg-sx-card border border-sx-border rounded-2xl p-8 flex flex-col relative overflow-hidden"
+              className="bg-sx-card border border-sx-border rounded-2xl p-8 flex flex-col relative overflow-hidden"
               onMouseMove={spot3.handleMouseMove}
               onMouseEnter={() => spot3.setIsHovered(true)}
               onMouseLeave={() => spot3.setIsHovered(false)}
@@ -304,7 +304,7 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <div className="mt-auto pt-8">
+              <div className="mt-8">
                 <Button variant="secondary" onClick={openBooking} className="w-full">
                   Связаться
                 </Button>
