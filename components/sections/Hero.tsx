@@ -13,9 +13,9 @@ const HeroOrb = dynamic(() => import("@/components/three/HeroOrb"), {
 
 /*
   Animation stages:
-  0 — Orb fills the center of the viewport. Nothing else visible. (0–2.0s)
-  1 — Orb shrinks and slides to the right side. (2.0–3.8s)
-  2 — Text appears on the left, header fades in, marquee appears. (3.8s+)
+  0 — Big orb centered on full-screen black overlay. Nothing else visible.       (0–2.0s)
+  1 — Overlay fades out, orb shrinks+fades with it.                              (2.0–2.8s)
+  2 — Layout orb appears in final position (right), text slides in, header shows. (2.8s+)
 */
 
 export default function Hero() {
@@ -24,83 +24,74 @@ export default function Hero() {
 
   useEffect(() => {
     const t1 = setTimeout(() => setStage(1), 2000);
-    const t2 = setTimeout(() => setStage(2), 3800);
+    const t2 = setTimeout(() => setStage(2), 2800);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
     };
   }, []);
 
-  // Emit stage to header via a data attribute on <html>
+  // Signal header
   useEffect(() => {
     document.documentElement.setAttribute("data-hero-stage", String(stage));
   }, [stage]);
 
   return (
     <section className="relative min-h-screen flex flex-col">
-      {/* ── STAGE 0–1: Full-screen orb overlay ── */}
+
+      {/* ── Full-screen overlay (stages 0–1) ── */}
       <AnimatePresence>
         {stage < 2 && (
           <motion.div
-            className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
-            style={{ overflow: "visible", background: "#050A0A" }}
+            key="overlay"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-sx-deep"
             initial={{ opacity: 1 }}
+            animate={stage === 1 ? { opacity: 0 } : { opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
           >
             <motion.div
-              className="relative"
               style={{ overflow: "visible" }}
-              initial={{
-                width: "min(90vw, 90vh)",
-                height: "min(90vw, 90vh)",
-              }}
+              initial={{ width: "min(80vw, 80vh)", height: "min(80vw, 80vh)", scale: 1 }}
               animate={
-                stage >= 1
-                  ? {
-                      width: "min(35vw, 500px)",
-                      height: "min(35vw, 500px)",
-                      x: "25vw",
-                    }
-                  : {
-                      width: "min(90vw, 90vh)",
-                      height: "min(90vw, 90vh)",
-                      x: 0,
-                    }
+                stage === 1
+                  ? { scale: 0.6, width: "min(80vw, 80vh)", height: "min(80vw, 80vh)" }
+                  : { scale: 1,   width: "min(80vw, 80vh)", height: "min(80vw, 80vh)" }
               }
-              transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
             >
-              <div className="absolute inset-0 -m-16 bg-[radial-gradient(circle,rgba(0,240,144,0.12),transparent_70%)] blur-3xl pointer-events-none" />
+              <div className="absolute inset-0 -m-16 bg-[radial-gradient(circle,rgba(0,240,144,0.14),transparent_70%)] blur-3xl pointer-events-none" />
               <HeroOrb className="w-full h-full" />
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ── STAGE 2: Final hero layout ── */}
+      {/* ── Final hero layout (stage 2) ── */}
       <div className="flex-1 flex items-center justify-center w-full px-6">
         <div className="w-[85%] max-w-[1400px] flex items-center justify-between relative">
-          {/* TEXT — left side */}
+
+          {/* TEXT — left */}
           <motion.div
             className="relative z-10 max-w-[55%]"
             initial={{ opacity: 0, x: -40 }}
             animate={stage >= 2 ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           >
             <motion.h1
               className="font-heading text-5xl md:text-6xl lg:text-7xl font-extrabold text-sx-accent leading-none tracking-tight"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={stage >= 2 ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             >
               СЕРВЕКС
             </motion.h1>
 
             <motion.p
               className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-sx-cream mt-4 leading-tight"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={stage >= 2 ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.5 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             >
               цифровой администратор
               <br />
@@ -109,9 +100,9 @@ export default function Hero() {
 
             <motion.p
               className="text-base md:text-lg text-sx-secondary mt-6 max-w-lg leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={stage >= 2 ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.7 }}
+              transition={{ duration: 0.7, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
             >
               Берёт на себя общение с клиентами, запись, переносы и
               отмены&nbsp;&mdash; чтобы бизнес перестал терять выручку на первой
@@ -120,9 +111,9 @@ export default function Hero() {
 
             <motion.div
               className="mt-8 flex flex-wrap gap-4"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={stage >= 2 ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.9 }}
+              transition={{ duration: 0.7, delay: 0.44, ease: [0.22, 1, 0.36, 1] }}
             >
               <Button size="lg" variant="primary" onClick={openBooking}>
                 Записаться на демо
@@ -136,11 +127,11 @@ export default function Hero() {
               className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-sx-muted"
               initial={{ opacity: 0 }}
               animate={stage >= 2 ? { opacity: 1 } : {}}
-              transition={{ duration: 0.6, delay: 1.1 }}
+              transition={{ duration: 0.7, delay: 0.58 }}
             >
               {["Запуск за 1 день", "Прозрачная аналитика", "Работает 24/7"].map(
-                (item, i) => (
-                  <span key={i} className="flex items-center gap-2">
+                (item) => (
+                  <span key={item} className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-sx-accent" />
                     {item}
                   </span>
@@ -149,16 +140,17 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* ORB — right side (final position, visible after overlay exits) */}
+          {/* ORB — right (appears after overlay is gone) */}
           <motion.div
             className="relative z-0"
             style={{
               width: "clamp(300px, 35vw, 500px)",
               height: "clamp(300px, 35vw, 500px)",
+              overflow: "visible",
             }}
-            initial={{ opacity: 0 }}
-            animate={stage >= 2 ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.4, delay: 0 }}
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={stage >= 2 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.85 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="absolute inset-0 -m-12 bg-[radial-gradient(circle,rgba(0,240,144,0.1),transparent_70%)] blur-2xl" />
             <HeroOrb className="w-full h-full" />
@@ -168,9 +160,9 @@ export default function Hero() {
 
       {/* Marquee at bottom */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={stage >= 2 ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6, delay: 1.3 }}
+        transition={{ duration: 0.6, delay: 0.7 }}
       >
         <Marquee />
       </motion.div>
