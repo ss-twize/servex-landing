@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 
@@ -52,7 +52,7 @@ function ChevronIcon({ open }: { open: boolean }) {
       strokeLinejoin="round"
       className="text-sx-muted shrink-0"
       animate={{ rotate: open ? 180 : 0 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.25 }}
     >
       <polyline points="6 9 12 15 18 9" />
     </motion.svg>
@@ -61,54 +61,86 @@ function ChevronIcon({ open }: { open: boolean }) {
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 15]);
 
   const toggle = (i: number) => {
     setOpenIndex(openIndex === i ? null : i);
   };
 
   return (
-    <SectionWrapper id="faq">
-      <AnimateOnScroll>
-        <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center">
-          Частые вопросы
-        </h2>
-      </AnimateOnScroll>
-
-      <div className="mt-14 max-w-3xl mx-auto space-y-3">
-        {faqs.map((faq, i) => (
-          <AnimateOnScroll key={i} delay={0.05 + i * 0.04}>
-            <div className="bg-sx-card border border-sx-border rounded-xl overflow-hidden">
-              <button
-                onClick={() => toggle(i)}
-                className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left cursor-pointer"
-              >
-                <span className="font-heading text-sm md:text-base font-medium text-sx-cream">
-                  {faq.q}
-                </span>
-                <ChevronIcon open={openIndex === i} />
-              </button>
-
-              <AnimatePresence initial={false}>
-                {openIndex === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-6 pb-5">
-                      <p className="text-sx-muted text-sm leading-relaxed">
-                        {faq.a}
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </AnimateOnScroll>
-        ))}
+    <section id="faq" className="py-24 md:py-32 px-6 relative overflow-hidden" ref={sectionRef}>
+      {/* Giant rotating "?" background */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+        aria-hidden="true"
+      >
+        <motion.span
+          className="font-heading font-black text-sx-cream"
+          style={{
+            fontSize: "40vw",
+            lineHeight: 1,
+            opacity: 0.025,
+            rotate,
+          }}
+        >
+          ?
+        </motion.span>
       </div>
-    </SectionWrapper>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        <AnimateOnScroll>
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center">
+            Частые вопросы
+          </h2>
+        </AnimateOnScroll>
+
+        <div className="mt-14 max-w-3xl mx-auto space-y-3">
+          {faqs.map((faq, i) => (
+            <AnimateOnScroll key={i} delay={0.05 + i * 0.04}>
+              <div
+                className={`rounded-xl overflow-hidden transition-colors duration-300 ${
+                  openIndex === i
+                    ? "bg-sx-card/70 border-l-2 border-sx-accent border-t border-r border-b border-sx-border"
+                    : "bg-sx-card border border-sx-border"
+                }`}
+              >
+                <button
+                  onClick={() => toggle(i)}
+                  className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left cursor-pointer"
+                >
+                  <span className="font-heading text-sm md:text-base font-medium text-sx-cream">
+                    {faq.q}
+                  </span>
+                  <ChevronIcon open={openIndex === i} />
+                </button>
+
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: openIndex === i ? "auto" : 0,
+                    opacity: openIndex === i ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ overflow: "hidden" }}
+                >
+                  <div className="px-6 pb-5">
+                    <p className="text-sx-muted text-sm leading-relaxed">
+                      {faq.a}
+                    </p>
+                  </div>
+                </motion.div>
+              </div>
+            </AnimateOnScroll>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

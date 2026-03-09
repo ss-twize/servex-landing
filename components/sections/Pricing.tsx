@@ -76,16 +76,29 @@ export default function Pricing() {
   const pricing = agentPricing[selectedPeriod];
 
   return (
-    <SectionWrapper id="pricing">
+    <SectionWrapper id="pricing" className="overflow-hidden">
+      {/* Background word */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+        aria-hidden="true"
+      >
+        <span
+          className="font-heading font-black text-sx-cream whitespace-nowrap"
+          style={{ fontSize: "8vw", opacity: 0.025 }}
+        >
+          ТАРИФЫ
+        </span>
+      </div>
+
       <AnimateOnScroll>
-        <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center">
+        <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center relative z-10">
           Тарифы
         </h2>
       </AnimateOnScroll>
 
-      {/* Billing toggle */}
+      {/* Billing toggle — only shown above the central Agent card */}
       <AnimateOnScroll delay={0.1}>
-        <div className="flex justify-center mt-10">
+        <div className="flex justify-center mt-10 relative z-10">
           <div className="inline-flex bg-sx-card border border-sx-border rounded-full p-1 gap-1">
             {periods.map((p) => (
               <button
@@ -111,11 +124,75 @@ export default function Pricing() {
         </div>
       </AnimateOnScroll>
 
-      {/* Cards */}
-      <div className="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        {/* Card 1: Агент (featured) */}
-        <AnimateOnScroll delay={0.15}>
-          <div className="relative bg-sx-card border-2 border-sx-accent rounded-2xl p-8 shadow-[0_0_40px_-10px_rgba(1,222,130,0.2)]">
+      {/* Fan layout — 3 cards */}
+      <div className="mt-14 relative z-10 flex flex-col lg:flex-row items-center lg:items-end justify-center gap-0 lg:gap-4">
+
+        {/* Voice Agent — left, tilted */}
+        <motion.div
+          className="w-full max-w-sm lg:max-w-xs"
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          style={{ transformOrigin: "bottom center" }}
+          whileHover={{ rotate: 0, scale: 0.97, opacity: 0.9 }}
+          animate={{ rotate: -2, scale: 0.93, opacity: 0.75 }}
+        >
+          <div
+            className="relative bg-sx-card border border-sx-border rounded-2xl p-8"
+            style={{ transform: "translateY(20px)" }}
+          >
+            {/* Badge */}
+            <div className="absolute top-4 right-4">
+              <span className="bg-sx-accent text-sx-deep text-xs font-heading font-semibold px-3 py-1 rounded-full">
+                Скоро
+              </span>
+            </div>
+
+            <h3 className="font-heading text-2xl font-bold text-sx-cream mt-2">
+              Голосовой агент
+            </h3>
+            <p className="text-sx-muted text-sm mt-1">
+              Голосовой ассистент для входящих звонков
+            </p>
+
+            <ul className="mt-6 space-y-3">
+              {voiceFeatures.map((f) => (
+                <li key={f} className="flex items-start gap-3">
+                  <CheckIcon muted />
+                  <span className="text-sx-muted text-sm">{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8">
+              <Button variant="secondary" className="w-full">
+                Узнать первым
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Agent — center, dominant */}
+        <motion.div
+          className="w-full max-w-sm relative z-20 lg:-mx-2"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {/* Green top border line */}
+          <div className="h-0.5 w-full bg-sx-accent rounded-t-sm" />
+
+          <div
+            className="relative bg-sx-card rounded-b-2xl p-8"
+            style={{
+              border: "1px solid rgba(1,222,130,0.5)",
+              borderTop: "none",
+              boxShadow:
+                "0 4px 6px rgba(1,222,130,0.05), 0 10px 15px rgba(1,222,130,0.08), 0 20px 25px rgba(1,222,130,0.06), 0 40px 55px rgba(1,222,130,0.04)",
+            }}
+          >
             {/* Badge */}
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
               <span className="bg-sx-accent text-sx-deep text-xs font-heading font-semibold px-4 py-1 rounded-full">
@@ -187,45 +264,23 @@ export default function Pricing() {
               </Button>
             </div>
           </div>
-        </AnimateOnScroll>
+        </motion.div>
 
-        {/* Card 2: Голосовой агент */}
-        <AnimateOnScroll delay={0.25}>
-          <div className="relative bg-sx-card border border-sx-border rounded-2xl p-8 opacity-80">
-            {/* Badge */}
-            <div className="absolute top-4 right-4">
-              <span className="bg-sx-accent text-sx-deep text-xs font-heading font-semibold px-3 py-1 rounded-full">
-                Скоро
-              </span>
-            </div>
-
-            <h3 className="font-heading text-2xl font-bold text-sx-cream mt-2">
-              Голосовой агент
-            </h3>
-            <p className="text-sx-muted text-sm mt-1">
-              Голосовой ассистент для входящих звонков
-            </p>
-
-            <ul className="mt-6 space-y-3">
-              {voiceFeatures.map((f) => (
-                <li key={f} className="flex items-start gap-3">
-                  <CheckIcon muted />
-                  <span className="text-sx-muted text-sm">{f}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8">
-              <Button variant="secondary" className="w-full">
-                Узнать первым
-              </Button>
-            </div>
-          </div>
-        </AnimateOnScroll>
-
-        {/* Card 3: Enterprise */}
-        <AnimateOnScroll delay={0.35}>
-          <div className="relative bg-sx-card border border-sx-border rounded-2xl p-8">
+        {/* Enterprise — right, tilted */}
+        <motion.div
+          className="w-full max-w-sm lg:max-w-xs"
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          style={{ transformOrigin: "bottom center" }}
+          whileHover={{ rotate: 0, scale: 0.97, opacity: 0.9 }}
+          animate={{ rotate: 2, scale: 0.93, opacity: 0.75 }}
+        >
+          <div
+            className="relative bg-sx-card border border-sx-border rounded-2xl p-8"
+            style={{ transform: "translateY(20px)" }}
+          >
             <h3 className="font-heading text-2xl font-bold text-sx-cream mt-2">
               Enterprise
             </h3>
@@ -254,7 +309,7 @@ export default function Pricing() {
               </Button>
             </div>
           </div>
-        </AnimateOnScroll>
+        </motion.div>
       </div>
     </SectionWrapper>
   );
