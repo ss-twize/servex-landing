@@ -65,8 +65,18 @@ export default function Header() {
   /* Track scroll position to highlight active section */
   const updateActiveOnScroll = useCallback(() => {
     const offset = 200;
-    let found = false;
 
+    // If near the bottom of the page — highlight Контакты
+    const distFromBottom =
+      document.documentElement.scrollHeight -
+      window.scrollY -
+      window.innerHeight;
+    if (distFromBottom < 200) {
+      setActiveTab("Контакты");
+      return;
+    }
+
+    let found = false;
     for (let i = sectionToNav.length - 1; i >= 0; i--) {
       const el = document.getElementById(sectionToNav[i].id);
       if (el && el.getBoundingClientRect().top <= offset) {
