@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
+import ParallaxLayer from "@/components/ui/ParallaxLayer";
 
 function formatCurrency(value: number): string {
   return value.toLocaleString("ru-RU").replace(/,/g, " ") + " ₽";
@@ -85,106 +86,130 @@ export default function Calculator() {
 
   const potential = inquiries * avgTicket;
   const monthlyLoss = Math.round(potential * (lossPercent / 100));
-  const yearlyLoss = monthlyLoss * 12;
   const savedMonthly = Math.round(monthlyLoss * 0.7);
-  const savedYearly = savedMonthly * 12;
 
   return (
-    <SectionWrapper id="calculator">
-      <AnimateOnScroll>
-        <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center">
-          Сколько теряет ваш бизнес
-        </h2>
-      </AnimateOnScroll>
+    <SectionWrapper id="calculator" className="relative overflow-hidden">
+      {/* Giant ghost ₽ background */}
+      <ParallaxLayer speed={0.3} className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div
+          className="absolute top-0 right-[-5vw] font-heading font-black leading-none select-none"
+          style={{
+            fontSize: "40vw",
+            opacity: 0.03,
+            color: "#FDFBED",
+            lineHeight: 1,
+          }}
+        >
+          ₽
+        </div>
+      </ParallaxLayer>
 
-      <div className="mt-16 max-w-4xl mx-auto">
-        <AnimateOnScroll delay={0.1}>
-          <div className="bg-sx-card border border-sx-border rounded-2xl p-6 md:p-8">
-            <Slider
-              label="Заявок в месяц"
-              value={inquiries}
-              min={50}
-              max={1000}
-              step={10}
-              onChange={setInquiries}
-            />
-            <Slider
-              label="Средний чек"
-              value={avgTicket}
-              min={1000}
-              max={10000}
-              step={500}
-              suffix=" ₽"
-              onChange={setAvgTicket}
-            />
-            <Slider
-              label="Процент потерь без системы"
-              value={lossPercent}
-              min={5}
-              max={30}
-              step={1}
-              suffix="%"
-              onChange={setLossPercent}
-            />
-          </div>
+      <div className="relative">
+        {/* Heading */}
+        <AnimateOnScroll>
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream">
+            Сколько теряет ваш бизнес
+          </h2>
         </AnimateOnScroll>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <AnimateOnScroll delay={0.2}>
-            <div className="bg-sx-card border border-sx-border rounded-2xl p-6 md:p-8 h-full">
-              <h3 className="font-heading text-lg font-semibold text-sx-muted mb-6">
-                Без СЕРВЕКС
-              </h3>
-              <div className="space-y-5">
-                <div>
-                  <p className="text-sx-muted text-sm mb-1">Потенциальная выручка</p>
-                  <p className="text-sx-cream font-heading text-xl font-bold tabular-nums">
-                    <AnimatedNumber value={potential} />
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sx-muted text-sm mb-1">Потери в месяц</p>
-                  <p className="text-red-400 font-heading text-xl font-bold tabular-nums">
-                    −<AnimatedNumber value={monthlyLoss} />
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sx-muted text-sm mb-1">Потери в год</p>
-                  <p className="text-red-400 font-heading text-2xl font-bold tabular-nums">
-                    −<AnimatedNumber value={yearlyLoss} />
-                  </p>
-                </div>
-              </div>
-            </div>
-          </AnimateOnScroll>
+        {/* Asymmetric two-column layout */}
+        <div className="mt-12 md:mt-16 flex flex-col md:flex-row gap-8 md:gap-12 items-start">
 
-          <AnimateOnScroll delay={0.3}>
-            <div className="bg-sx-card border border-sx-border rounded-2xl p-6 md:p-8 h-full hover:border-sx-accent/50 transition-colors duration-300">
-              <h3 className="font-heading text-lg font-semibold text-sx-accent mb-6">
-                С СЕРВЕКС
-              </h3>
-              <div className="space-y-5">
-                <div>
-                  <p className="text-sx-muted text-sm mb-1">Сокращение потерь на 70%</p>
-                  <p className="text-sx-cream font-heading text-xl font-bold tabular-nums">
-                    <AnimatedNumber value={potential} />
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sx-muted text-sm mb-1">Сохранённая выручка в месяц</p>
-                  <p className="text-sx-accent font-heading text-xl font-bold tabular-nums">
-                    +<AnimatedNumber value={savedMonthly} />
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sx-muted text-sm mb-1">Сохранённая выручка в год</p>
-                  <p className="text-sx-accent font-heading text-2xl font-bold tabular-nums">
-                    +<AnimatedNumber value={savedYearly} />
-                  </p>
+          {/* Left 55%: sliders */}
+          <div className="w-full md:w-[55%]">
+            <AnimateOnScroll delay={0.1}>
+              <div className="bg-sx-card border border-sx-border rounded-2xl p-6 md:p-8">
+                <Slider
+                  label="Заявок в месяц"
+                  value={inquiries}
+                  min={50}
+                  max={1000}
+                  step={10}
+                  onChange={setInquiries}
+                />
+                <Slider
+                  label="Средний чек"
+                  value={avgTicket}
+                  min={1000}
+                  max={10000}
+                  step={500}
+                  suffix=" ₽"
+                  onChange={setAvgTicket}
+                />
+                <Slider
+                  label="Процент потерь без системы"
+                  value={lossPercent}
+                  min={5}
+                  max={30}
+                  step={1}
+                  suffix="%"
+                  onChange={setLossPercent}
+                />
+
+                {/* Supporting metrics below sliders */}
+                <div className="mt-4 pt-6 border-t border-sx-border grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sx-muted text-xs mb-1">Потенциальная выручка</p>
+                    <p className="text-sx-cream font-heading font-bold tabular-nums">
+                      <AnimatedNumber value={potential} />
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sx-muted text-xs mb-1">Потери в год</p>
+                    <p className="text-red-400 font-heading font-bold tabular-nums">
+                      −<AnimatedNumber value={monthlyLoss * 12} />
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </AnimateOnScroll>
+            </AnimateOnScroll>
+          </div>
+
+          {/* Right 45%: giant animated number */}
+          <div className="w-full md:w-[45%] flex flex-col items-start md:pt-4">
+            <AnimateOnScroll delay={0.2}>
+              <p className="text-sx-muted text-sm uppercase tracking-widest mb-3 font-body">
+                Потери в месяц
+              </p>
+
+              {/* Ghost echo number (behind) */}
+              <div className="relative">
+                <div
+                  className="absolute font-heading font-black leading-none text-sx-cream select-none pointer-events-none"
+                  style={{
+                    fontSize: "clamp(3rem, 8vw, 9vw)",
+                    opacity: 0.06,
+                    filter: "blur(2px)",
+                    top: "-0.08em",
+                    left: "0.05em",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <AnimatedNumber value={monthlyLoss} />
+                </div>
+                {/* Foreground number */}
+                <div
+                  className="relative font-heading font-black leading-none text-sx-cream tabular-nums"
+                  style={{ fontSize: "clamp(2.5rem, 8vw, 9vw)", zIndex: 1 }}
+                >
+                  <AnimatedNumber value={monthlyLoss} />
+                </div>
+              </div>
+
+              {/* С СЕРВЕКС savings */}
+              <div className="mt-6 md:mt-8">
+                <p className="text-sx-muted text-sm uppercase tracking-widest mb-2 font-body">
+                  С СЕРВЕКС сохраните
+                </p>
+                <div className="text-3xl md:text-4xl text-sx-accent font-bold font-heading tabular-nums">
+                  +<AnimatedNumber value={savedMonthly} />
+                </div>
+                <p className="text-sx-muted text-sm mt-1">в месяц (−70% потерь)</p>
+              </div>
+            </AnimateOnScroll>
+          </div>
+
         </div>
       </div>
 
