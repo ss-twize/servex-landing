@@ -18,12 +18,12 @@ export default function Home() {
     <main>
       <Hero />
       <Problem />
-      <Calculator />
       <Solution />
-      <Comparison />
       <Features />
       <Ecosystem />
       <Platform />
+      <Comparison />
+      <Calculator />
       <Integrations />
       <ForWhom />
       <Pricing />
