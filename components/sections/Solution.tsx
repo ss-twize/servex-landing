@@ -1,119 +1,81 @@
 "use client";
-import { motion, useInView } from "framer-motion";
-import { useRef, useState, useCallback } from "react";
+import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 
-const capabilities = [
+const cards = [
   {
-    title: "Принимает поток обращений",
-    description:
-      "Обрабатывает входящие сообщения клиентов и поддерживает диалог без потерь, пауз и ручной перегрузки команды.",
+    title: "Обрабатывает обращения клиентов",
+    desc: "Отвечает на сообщения в мессенджерах и начинает диалог без задержек.",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
   },
   {
-    title: "Ведёт клиента до записи",
-    description:
-      "Не просто отвечает на вопросы, а доводит обращение до конкретного действия: записи на услугу в удобное время.",
+    title: "Записывает на услуги",
+    desc: "Подбирает свободное время и фиксирует запись в календаре.",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <polyline points="9 16 11 18 15 14" />
+      </svg>
+    ),
   },
   {
-    title: "Управляет изменениями в расписании",
-    description:
-      "Переносы и отмены не превращаются в хаос: корректно обновляет запись и удерживает порядок в клиентском потоке.",
+    title: "Управляет расписанием",
+    desc: "Переносит и отменяет записи по запросу клиента.",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="1 4 1 10 7 10" />
+        <polyline points="23 20 23 14 17 14" />
+        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15" />
+      </svg>
+    ),
   },
   {
-    title: "Работает без смен и выходных",
-    description:
-      "Первая линия сервиса остаётся активной 24/7 — независимо от времени суток, загрузки или человеческого ресурса.",
-  },
-  {
-    title: "Встраивается в рабочий контур бизнеса",
-    description:
-      "Подключается к мессенджерам, календарям и системам записи, становясь частью реальной операционной модели.",
-  },
-  {
-    title: "Делает сервис измеримым",
-    description:
-      "Показывает обращения, записи и аналитику первой линии — владелец видит не только факт работы, но и её результат.",
+    title: "Возвращает клиентов",
+    desc: "Использует сценарии для возврата клиентов и заполнения свободных окон.",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+        <polyline points="16 11 18 13 22 9" />
+      </svg>
+    ),
   },
 ];
 
-function CapabilityCard({
-  item,
-  index,
-  inView,
-}: {
-  item: (typeof capabilities)[number];
-  index: number;
-  inView: boolean;
-}) {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    },
-    []
-  );
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="bg-sx-card border border-sx-border rounded-2xl p-6 md:p-8 transition-all duration-300 hover:border-sx-accent/50 hover:shadow-[0_0_30px_rgba(0,240,144,0.08)] relative overflow-hidden"
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {isHovered && (
-        <div
-          className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-300"
-          style={{
-            background: `radial-gradient(circle 150px at ${mousePos.x}px ${mousePos.y}px, rgba(0,240,144,0.08), transparent)`,
-          }}
-        />
-      )}
-      <h3 className="relative z-10 font-heading font-bold text-xl text-sx-cream">
-        {item.title}
-      </h3>
-      <p className="relative z-10 text-sx-secondary text-base leading-relaxed mt-3">
-        {item.description}
-      </p>
-    </motion.div>
-  );
-}
-
 export default function Solution() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const inView = useInView(sectionRef, { once: true, margin: "-80px" });
-
   return (
-    <section ref={sectionRef} id="solution" className="py-24 md:py-32 px-6">
+    <section id="solution" className="py-24 md:py-32 px-6">
       <div className="section-container">
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <AnimateOnScroll delay={0}>
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream">
-            Что делает СЕРВЕКС
+            СЕРВЕКС управляет обращениями клиентов и записью на услуги
           </h2>
           <p className="text-lg md:text-xl text-sx-secondary mt-4 max-w-2xl">
-            Не просто отвечает клиентам. Управляет первой линией сервиса.
+            Система заменяет первую линию сервиса и берёт на себя общение с клиентами.
           </p>
-        </motion.div>
+        </AnimateOnScroll>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
-          {capabilities.map((item, i) => (
-            <CapabilityCard
-              key={item.title}
-              item={item}
-              index={i}
-              inView={inView}
-            />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mt-12">
+          {cards.map((card, i) => (
+            <AnimateOnScroll key={card.title} delay={i * 0.1}>
+              <div className="bg-sx-card border border-sx-border/50 rounded-xl p-6 h-full">
+                <div className="w-10 h-10 rounded-lg bg-sx-accent/10 flex items-center justify-center mb-4 text-sx-accent">
+                  {card.icon}
+                </div>
+                <h3 className="font-heading font-bold text-lg text-sx-cream mb-2">
+                  {card.title}
+                </h3>
+                <p className="text-sx-secondary text-base leading-relaxed">
+                  {card.desc}
+                </p>
+              </div>
+            </AnimateOnScroll>
           ))}
         </div>
       </div>
