@@ -13,12 +13,24 @@ const navItems = [
 
 export default function Header() {
   const [activeTab, setActiveTab] = useState(navItems[0].name);
-  const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    // Watch for hero intro animation to finish (stage 2)
+    const check = () => {
+      const stage = document.documentElement.getAttribute("data-hero-stage");
+      if (stage === "2") {
+        setVisible(true);
+      }
+    };
+    // Check immediately and observe changes
+    check();
+    const observer = new MutationObserver(check);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-hero-stage"],
+    });
+    return () => observer.disconnect();
   }, []);
 
   const handleClick = (e: React.MouseEvent, item: (typeof navItems)[0]) => {
@@ -31,7 +43,12 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-1/2 -translate-x-1/2 z-50 pt-6">
+    <motion.header
+      className="fixed top-0 left-1/2 -translate-x-1/2 z-50 pt-6"
+      initial={{ opacity: 0, y: -20 }}
+      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    >
       <nav className="flex items-center gap-1 bg-sx-deep/60 border border-sx-border/50 backdrop-blur-xl py-1.5 px-1.5 rounded-full shadow-lg">
         {/* Logo */}
         <Link
@@ -75,6 +92,6 @@ export default function Header() {
           );
         })}
       </nav>
-    </header>
+    </motion.header>
   );
 }

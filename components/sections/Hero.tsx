@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import Button from "@/components/ui/Button";
 import Marquee from "@/components/ui/Marquee";
@@ -11,36 +11,80 @@ const HeroOrb = dynamic(() => import("@/components/three/HeroOrb"), {
   loading: () => <div className="w-full h-full" />,
 });
 
+/*
+  Animation stages:
+  0 — Orb fills the center of the viewport. Nothing else visible. (0–1.8s)
+  1 — Orb shrinks and slides to the right side. (1.8–3.2s)
+  2 — Text appears on the left, header fades in, marquee appears. (3.2s+)
+*/
+
 export default function Hero() {
   const { openBooking } = useDemoBooking();
-  const [stage, setStage] = useState(0); // 0=orb centered large, 1=orb moving right, 2=text appears
+  const [stage, setStage] = useState(0);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setStage(1), 1500);
-    const t2 = setTimeout(() => setStage(2), 2500);
+    const t1 = setTimeout(() => setStage(1), 1800);
+    const t2 = setTimeout(() => setStage(2), 3200);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
     };
   }, []);
 
+  // Emit stage to header via a data attribute on <html>
+  useEffect(() => {
+    document.documentElement.setAttribute("data-hero-stage", String(stage));
+  }, [stage]);
+
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden">
-      {/* Main content area — vertically centered */}
+    <section className="relative min-h-screen flex flex-col">
+      {/* ── STAGE 0–1: Full-screen orb overlay ── */}
+      <AnimatePresence>
+        {stage < 2 && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            style={{ background: "#050A0A" }}
+          >
+            <motion.div
+              initial={{
+                width: "min(90vw, 90vh)",
+                height: "min(90vw, 90vh)",
+              }}
+              animate={
+                stage >= 1
+                  ? {
+                      width: "min(35vw, 500px)",
+                      height: "min(35vw, 500px)",
+                      x: "25vw",
+                    }
+                  : {
+                      width: "min(90vw, 90vh)",
+                      height: "min(90vw, 90vh)",
+                      x: 0,
+                    }
+              }
+              transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="absolute inset-0 -m-16 bg-[radial-gradient(circle,rgba(0,240,144,0.12),transparent_70%)] blur-3xl" />
+              <HeroOrb className="w-full h-full" />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── STAGE 2: Final hero layout ── */}
       <div className="flex-1 flex items-center justify-center w-full px-6">
         <div className="w-[85%] max-w-[1400px] flex items-center justify-between relative">
           {/* TEXT — left side */}
           <motion.div
             className="relative z-10 max-w-[55%]"
-            initial={{ opacity: 0, x: -60 }}
-            animate={
-              stage >= 2
-                ? { opacity: 1, x: 0 }
-                : { opacity: 0, x: -60 }
-            }
+            initial={{ opacity: 0, x: -40 }}
+            animate={stage >= 2 ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Brand name */}
             <motion.h1
               className="font-heading text-5xl md:text-6xl lg:text-7xl font-extrabold text-sx-accent leading-none tracking-tight"
               initial={{ opacity: 0, y: 20 }}
@@ -50,7 +94,6 @@ export default function Hero() {
               СЕРВЕКС
             </motion.h1>
 
-            {/* Subheading */}
             <motion.p
               className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-sx-cream mt-4 leading-tight"
               initial={{ opacity: 0, y: 20 }}
@@ -62,7 +105,6 @@ export default function Hero() {
               нового поколения
             </motion.p>
 
-            {/* Description */}
             <motion.p
               className="text-base md:text-lg text-sx-secondary mt-6 max-w-lg leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
@@ -74,7 +116,6 @@ export default function Hero() {
               линии сервиса
             </motion.p>
 
-            {/* CTAs */}
             <motion.div
               className="mt-8 flex flex-wrap gap-4"
               initial={{ opacity: 0, y: 20 }}
@@ -84,48 +125,39 @@ export default function Hero() {
               <Button size="lg" variant="primary" onClick={openBooking}>
                 Записаться на демо
               </Button>
-              <Button
-                size="lg"
-                variant="secondary"
-                href="https://t.me/servex_bot"
-              >
+              <Button size="lg" variant="secondary" href="https://t.me/servex_bot">
                 Написать в Telegram
               </Button>
             </motion.div>
 
-            {/* Trust line */}
             <motion.div
               className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-sx-muted"
               initial={{ opacity: 0 }}
               animate={stage >= 2 ? { opacity: 1 } : {}}
               transition={{ duration: 0.6, delay: 0.9 }}
             >
-              {[
-                "Запуск за 1 день",
-                "Прозрачная аналитика",
-                "Работает 24/7",
-              ].map((item, i) => (
-                <span key={i} className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sx-accent" />
-                  {item}
-                </span>
-              ))}
+              {["Запуск за 1 день", "Прозрачная аналитика", "Работает 24/7"].map(
+                (item, i) => (
+                  <span key={i} className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sx-accent" />
+                    {item}
+                  </span>
+                )
+              )}
             </motion.div>
           </motion.div>
 
-          {/* ORB — right side, animated from center-large to right-normal */}
+          {/* ORB — right side (final position, visible after overlay exits) */}
           <motion.div
             className="relative z-0"
-            style={{ width: "clamp(300px, 35vw, 500px)", height: "clamp(300px, 35vw, 500px)" }}
-            initial={{ scale: 1.8, x: "-30vw", y: 0, opacity: 1 }}
-            animate={
-              stage >= 1
-                ? { scale: 1, x: 0, y: 0 }
-                : { scale: 1.8, x: "-30vw", y: 0 }
-            }
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              width: "clamp(300px, 35vw, 500px)",
+              height: "clamp(300px, 35vw, 500px)",
+            }}
+            initial={{ opacity: 0 }}
+            animate={stage >= 2 ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: 0.4, delay: 0 }}
           >
-            {/* Green ambient glow */}
             <div className="absolute inset-0 -m-12 bg-[radial-gradient(circle,rgba(0,240,144,0.1),transparent_70%)] blur-2xl" />
             <HeroOrb className="w-full h-full" />
           </motion.div>
@@ -133,7 +165,13 @@ export default function Hero() {
       </div>
 
       {/* Marquee at bottom */}
-      <Marquee />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={stage >= 2 ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 1.1 }}
+      >
+        <Marquee />
+      </motion.div>
     </section>
   );
 }
