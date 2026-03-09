@@ -107,10 +107,10 @@ const integrations = [
 
 export default function Integrations() {
   return (
-    <section id="integrations" className="py-24 md:py-32 px-6">
+    <section id="integrations" className="py-12 md:py-16 px-6">
       <div className="section-container">
         <AnimateOnScroll>
-          <h2 className="text-3xl md:text-4xl font-heading font-bold text-sx-cream text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-sx-cream text-center mb-6">
             Интеграции
           </h2>
         </AnimateOnScroll>
@@ -118,8 +118,10 @@ export default function Integrations() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {integrations.map((item, i) => (
             <AnimateOnScroll key={item.name} delay={0.05 * i}>
-              <div className="bg-sx-card border border-sx-border rounded-2xl p-6 flex flex-col items-center gap-3 hover:border-sx-accent/50 transition-colors">
-                {item.icon}
+              <div className="bg-sx-card border border-sx-border rounded-2xl p-4 h-[120px] flex flex-col items-center justify-center gap-3 hover:border-sx-accent/50 transition-colors">
+                <div className="w-8 h-8 flex items-center justify-center [&>svg]:w-8 [&>svg]:h-8">
+                  {item.icon}
+                </div>
                 <span className="text-sm font-medium text-sx-secondary">
                   {item.name}
                 </span>
