@@ -3,8 +3,9 @@ import Problem from "@/components/sections/Problem";
 import Calculator from "@/components/sections/Calculator";
 import Solution from "@/components/sections/Solution";
 import Comparison from "@/components/sections/Comparison";
-import Platform from "@/components/sections/Platform";
 import Features from "@/components/sections/Features";
+import Ecosystem from "@/components/sections/Ecosystem";
+import Platform from "@/components/sections/Platform";
 import Integrations from "@/components/sections/Integrations";
 import ForWhom from "@/components/sections/ForWhom";
 import Pricing from "@/components/sections/Pricing";
@@ -20,8 +21,9 @@ export default function Home() {
       <Calculator />
       <Solution />
       <Comparison />
-      <Platform />
       <Features />
+      <Ecosystem />
+      <Platform />
       <Integrations />
       <ForWhom />
       <Pricing />

@@ -1,116 +1,95 @@
 "use client";
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useCallback } from "react";
+import { useRef } from "react";
 
-const features = [
+const layers = [
   {
-    title: "Принимает поток обращений",
+    number: "01",
+    title: "Входящий поток",
     description:
-      "СЕРВЕКС обрабатывает входящие сообщения клиентов и поддерживает диалог без потерь, пауз и ручной перегрузки команды.",
+      "Сообщения из Telegram, WhatsApp и других каналов поступают в единую систему обработки. СЕРВЕКС автоматически определяет тип обращения и выбирает сценарий.",
   },
   {
-    title: "Ведёт клиента до записи",
+    number: "02",
+    title: "Логика обработки",
     description:
-      "Система не просто отвечает на вопросы, а доводит обращение до конкретного действия: записи на услугу в удобное время.",
+      "Каждый диалог следует настраиваемому сценарию: от приветствия до записи, переноса или передачи оператору. Система учитывает контекст и историю клиента.",
   },
   {
-    title: "Управляет изменениями в расписании",
+    number: "03",
+    title: "Управление записями",
     description:
-      "Переносы и отмены не превращаются в хаос: СЕРВЕКС корректно обновляет запись и удерживает порядок в клиентском потоке.",
+      "Интеграция с календарями и системами записи позволяет в реальном времени проверять доступность, создавать и изменять записи без участия человека.",
   },
   {
-    title: "Работает без смен и выходных",
+    number: "04",
+    title: "Аналитика и контроль",
     description:
-      "Первая линия сервиса остаётся активной 24/7 — независимо от времени суток, загрузки или человеческого ресурса.",
-  },
-  {
-    title: "Встраивается в рабочий контур бизнеса",
-    description:
-      "СЕРВЕКС подключается к мессенджерам, календарям и системам записи, становясь частью реальной операционной модели бизнеса.",
-  },
-  {
-    title: "Делает сервис измеримым",
-    description:
-      "Платформа показывает обращения, записи и аналитику первой линии, чтобы владелец видел не только факт работы, но и её результат.",
+      "Каждое обращение, каждая запись, каждый отказ — всё фиксируется. Владелец видит конверсии, потери и качество обработки в едином интерфейсе.",
   },
 ];
-
-function FeatureCard({
-  feature,
-  index,
-  inView,
-}: {
-  feature: (typeof features)[number];
-  index: number;
-  inView: boolean;
-}) {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  }, []);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="bg-sx-card border border-sx-border rounded-2xl p-6 md:p-8 transition-all duration-300 hover:border-sx-accent/50 hover:shadow-[0_0_30px_rgba(0,240,144,0.08)] relative overflow-hidden"
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {isHovered && (
-        <div
-          className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-300"
-          style={{
-            background: `radial-gradient(circle 150px at ${mousePos.x}px ${mousePos.y}px, rgba(0,240,144,0.08), transparent)`,
-          }}
-        />
-      )}
-      <h3 className="relative z-10 font-heading font-bold text-xl text-sx-cream">
-        {feature.title}
-      </h3>
-      <p className="relative z-10 text-sx-secondary text-base leading-relaxed mt-3">
-        {feature.description}
-      </p>
-    </motion.div>
-  );
-}
 
 export default function Features() {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   return (
-    <section
-      ref={sectionRef}
-      id="features"
-      className="py-24 md:py-32 px-6"
-    >
+    <section ref={sectionRef} id="system" className="py-24 md:py-32 px-6">
       <div className="section-container">
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center"
         >
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-sx-cream">
-            Возможности
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream">
+            Как устроена система СЕРВЕКС
           </h2>
-          <p className="text-lg md:text-xl text-sx-secondary mt-4 max-w-2xl mx-auto">
-            Не просто отвечает клиентам. Управляет первой линией сервиса.
+          <p className="text-lg md:text-xl text-sx-secondary mt-4 max-w-2xl">
+            Архитектура сервисной автоматизации
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
-          {features.map((feature, i) => (
-            <FeatureCard key={feature.title} feature={feature} index={i} inView={inView} />
+        <div className="mt-12 flex flex-col items-stretch">
+          {layers.map((layer, i) => (
+            <div key={layer.number} className="flex flex-col items-center">
+              {/* Connecting line above (skip first) */}
+              {i > 0 && (
+                <motion.div
+                  initial={{ scaleY: 0 }}
+                  animate={inView ? { scaleY: 1 } : {}}
+                  transition={{
+                    duration: 0.4,
+                    delay: i * 0.15,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="w-px h-8 bg-sx-accent/30 origin-top"
+                />
+              )}
+
+              {/* Layer card */}
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{
+                  duration: 0.5,
+                  delay: i * 0.15,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="bg-sx-card border border-sx-border rounded-2xl p-6 w-full flex items-start gap-5 md:gap-8"
+              >
+                <span className="text-5xl font-heading font-extrabold text-sx-accent/15 leading-none select-none shrink-0">
+                  {layer.number}
+                </span>
+                <div className="min-w-0">
+                  <h3 className="font-heading font-bold text-xl text-sx-cream">
+                    {layer.title}
+                  </h3>
+                  <p className="text-sx-secondary text-base leading-relaxed mt-2">
+                    {layer.description}
+                  </p>
+                </div>
+              </motion.div>
+            </div>
           ))}
         </div>
       </div>
