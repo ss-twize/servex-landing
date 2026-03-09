@@ -89,7 +89,7 @@ export default function Solution() {
           </AnimateOnScroll>
         ))}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 max-w-[66%] lg:max-w-[66.666%] mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 md:max-w-[66%] lg:max-w-[66.666%] mx-auto">
         {capabilities.slice(3).map((cap, i) => (
           <AnimateOnScroll key={cap.title} delay={0.45 + i * 0.1}>
             <div className="bg-sx-card border border-sx-border rounded-2xl p-6 transition-all duration-300 hover:border-sx-accent/50 hover:shadow-[0_0_15px_rgba(1,222,130,0.08)] h-full">
