@@ -11,53 +11,86 @@ function Orb() {
   const coreMatRef = useRef<THREE.MeshStandardMaterial>(null);
   const wireMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const wire2MatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const outerGlowRef = useRef<THREE.MeshBasicMaterial>(null);
   const mouse = useRef({ x: 0, y: 0 });
-  const mouseProximity = useRef(0); // 0 = far, 1 = directly over
+  const mouseProximity = useRef(0);
+  const birthTime = useRef<number | null>(null);
   const { viewport } = useThree();
 
-  /* Track pointer across the canvas */
   useFrame(({ pointer, clock }) => {
     const t = clock.getElapsedTime();
 
-    // Smooth mouse follow — 3x more responsive
+    /* ── Birth time tracking ── */
+    if (birthTime.current === null) birthTime.current = t;
+    const age = t - birthTime.current;
+
+    /* ── Awakening progress (0→1 over 2.2s) ── */
+    const AWAKE_DURATION = 2.2;
+    const awakeRaw = Math.min(age / AWAKE_DURATION, 1.0);
+    // Cubic ease-out
+    const awake = 1 - Math.pow(1 - awakeRaw, 3);
+
+    /* ── Spring entrance scale (0→1 with overshoot) ── */
+    // Dampened oscillation: 1 - e^(-kt) * cos(ωt)
+    const SPRING_DURATION = 1.0;
+    let entranceScale = 1.0;
+    if (age < SPRING_DURATION * 2) {
+      const k = 4.5; // damping
+      const omega = 10; // frequency
+      const s = age / SPRING_DURATION;
+      entranceScale = Math.max(0.001, 1 - Math.exp(-k * s) * Math.cos(omega * s));
+    }
+
+    /* ── Ignition flash at ~1.4s ── */
+    // A brief spike of green intensity at ignition moment
+    const IGNITION_TIME = 1.4;
+    const flashAge = age - IGNITION_TIME;
+    const flashIntensity =
+      flashAge > 0 && flashAge < 0.5
+        ? Math.exp(-flashAge * 12) * 5.0
+        : 0;
+
+    /* ── Mouse tracking ── */
     mouse.current.x += (pointer.x * 0.9 - mouse.current.x) * 0.1;
     mouse.current.y += (pointer.y * 0.6 - mouse.current.y) * 0.1;
 
-    // Calculate mouse proximity to center (0..1, 1 = directly over orb)
-    const dist = Math.sqrt(pointer.x * pointer.x + pointer.y * pointer.y);
-    const targetProximity = Math.max(0, 1 - dist * 1.2);
-    mouseProximity.current += (targetProximity - mouseProximity.current) * 0.08;
-    const prox = mouseProximity.current;
+    const dist = Math.sqrt(pointer.x ** 2 + pointer.y ** 2);
+    const targetProx = Math.max(0, 1 - dist * 1.2);
+    mouseProximity.current += (targetProx - mouseProximity.current) * 0.08;
+    const prox = mouseProximity.current * awake; // no mouse reaction while asleep
 
+    /* ── Group rotation + scale ── */
     if (groupRef.current) {
-      // Slow auto-rotation + STRONG mouse offset (5x original)
-      groupRef.current.rotation.y = t * 0.08 + mouse.current.x * 2.5;
+      groupRef.current.rotation.y = t * 0.08 + mouse.current.x * 2.5 * awake;
       groupRef.current.rotation.x =
-        Math.sin(t * 0.05) * 0.1 + mouse.current.y * 1.5;
-      groupRef.current.rotation.z = Math.sin(t * 0.03) * 0.05;
+        Math.sin(t * 0.05) * 0.1 * awake + mouse.current.y * 1.5 * awake;
+      groupRef.current.rotation.z = Math.sin(t * 0.03) * 0.05 * awake;
 
-      // Scale pulse — breathes faster when mouse is near
       const breathSpeed = 1.2 + prox * 3.0;
       const breathAmp = 0.02 + prox * 0.06;
-      groupRef.current.scale.setScalar(1 + Math.sin(t * breathSpeed) * breathAmp);
+      const breathe = awake > 0.8 ? 1 + Math.sin(t * breathSpeed) * breathAmp : 1;
+
+      groupRef.current.scale.setScalar(entranceScale * breathe);
     }
 
-    // Wireframe counter-rotation — faster with mouse
+    /* ── Wireframe counter-rotation ── */
     if (wireRef.current) {
       wireRef.current.rotation.y = -t * (0.04 + prox * 0.15);
       wireRef.current.rotation.x = -t * (0.02 + prox * 0.08);
     }
 
-    // Pulsing glow — intensifies on hover
+    /* ── Point light: charges up + ignition flash ── */
     if (glowRef.current) {
-      glowRef.current.intensity =
-        1.5 + Math.sin(t * 1.2) * 0.4 + prox * 2.5;
+      const baseIntensity = awake * (1.5 + Math.sin(t * 1.2) * 0.4 + prox * 2.5);
+      glowRef.current.intensity = baseIntensity + flashIntensity;
     }
 
-    // Color shift: brighten emissive when mouse is near
+    /* ── Wireframe green fill-in ── */
     if (wireMatRef.current) {
-      const greenIntensity = 0.35 + prox * 0.4;
-      wireMatRef.current.opacity = greenIntensity;
+      // Green fills in from 0, spikes slightly at ignition then settles
+      const baseOpacity = awake * (0.35 + prox * 0.4);
+      const flashOpacity = flashIntensity * 0.15;
+      wireMatRef.current.opacity = baseOpacity + flashOpacity;
       wireMatRef.current.color.setRGB(
         prox * 0.15,
         0.94 + prox * 0.06,
@@ -66,20 +99,26 @@ function Orb() {
     }
 
     if (wire2MatRef.current) {
-      wire2MatRef.current.opacity = 0.12 + prox * 0.18;
+      wire2MatRef.current.opacity = awake * (0.12 + prox * 0.18);
     }
 
-    // Core emissive brightens on hover
+    /* ── Core: dark at birth, hints of green at ignition ── */
     if (coreMatRef.current) {
-      coreMatRef.current.emissive.setRGB(0, prox * 0.15, prox * 0.08);
-      coreMatRef.current.emissiveIntensity = prox * 2;
+      // At ignition, core gets a brief green pulse
+      const coreGreen = awake > 0.6 ? prox * 0.15 + flashIntensity * 0.03 : 0;
+      coreMatRef.current.emissive.setRGB(0, coreGreen, coreGreen * 0.5);
+      coreMatRef.current.emissiveIntensity = prox * 2 + flashIntensity * 0.2;
+    }
+
+    /* ── Outer glow shell: invisible at birth, brightens at ignition ── */
+    if (outerGlowRef.current) {
+      outerGlowRef.current.opacity = awake * 0.04 + flashIntensity * 0.06;
     }
   });
 
   const radius = Math.min(viewport.width, viewport.height) * 0.28;
   const clampedRadius = Math.max(1.2, Math.min(radius, 2.2));
 
-  /* Shared geometry for perf */
   const icoGeo = useMemo(
     () => new THREE.IcosahedronGeometry(clampedRadius, 2),
     [clampedRadius]
@@ -95,11 +134,10 @@ function Orb() {
 
   return (
     <group ref={groupRef}>
-      {/* Point light for glow pulse */}
       <pointLight
         ref={glowRef}
         color="#00F090"
-        intensity={1.5}
+        intensity={0} /* starts dark, filled by useFrame */
         distance={12}
         decay={2}
       />
@@ -116,34 +154,35 @@ function Orb() {
         />
       </mesh>
 
-      {/* Green energy wireframe */}
+      {/* Green energy wireframe — starts invisible */}
       <mesh ref={wireRef} geometry={icoGeo}>
         <meshBasicMaterial
           ref={wireMatRef}
           color="#00F090"
           wireframe
           transparent
-          opacity={0.35}
+          opacity={0}
         />
       </mesh>
 
-      {/* Secondary finer wireframe for depth */}
+      {/* Secondary finer wireframe — starts invisible */}
       <mesh geometry={icoGeo} rotation={[0.4, 0.3, 0.1]}>
         <meshBasicMaterial
           ref={wire2MatRef}
           color="#00F090"
           wireframe
           transparent
-          opacity={0.12}
+          opacity={0}
         />
       </mesh>
 
-      {/* Outer glow shell */}
+      {/* Outer glow shell — starts invisible */}
       <mesh geometry={glowGeo}>
         <meshBasicMaterial
+          ref={outerGlowRef}
           color="#00F090"
           transparent
-          opacity={0.04}
+          opacity={0}
           side={THREE.BackSide}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
@@ -153,9 +192,11 @@ function Orb() {
   );
 }
 
-/* ─── Ambient particles floating around ─── */
+/* ─── Particles: fade in after orb awakens ─── */
 function Particles({ count = 40 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null);
+  const matRef = useRef<THREE.PointsMaterial>(null);
+  const birthTime = useRef<number | null>(null);
 
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
@@ -171,8 +212,17 @@ function Particles({ count = 40 }: { count?: number }) {
   }, [count]);
 
   useFrame(({ clock }) => {
-    if (ref.current) {
-      ref.current.rotation.y = clock.getElapsedTime() * 0.02;
+    const t = clock.getElapsedTime();
+    if (birthTime.current === null) birthTime.current = t;
+    const age = t - birthTime.current;
+
+    if (ref.current) ref.current.rotation.y = t * 0.02;
+
+    // Particles fade in after ignition (~1.4s)
+    if (matRef.current) {
+      const fadeStart = 1.6;
+      const fadeProgress = Math.min(Math.max((age - fadeStart) / 1.0, 0), 1);
+      matRef.current.opacity = fadeProgress * 0.6;
     }
   });
 
@@ -187,10 +237,11 @@ function Particles({ count = 40 }: { count?: number }) {
         />
       </bufferGeometry>
       <pointsMaterial
+        ref={matRef}
         color="#00F090"
         size={0.02}
         transparent
-        opacity={0.6}
+        opacity={0}
         sizeAttenuation
         depthWrite={false}
         blending={THREE.AdditiveBlending}
@@ -211,11 +262,7 @@ export default function HeroOrb({ className = "" }: { className?: string }) {
           style={{ background: "transparent" }}
         >
           <ambientLight intensity={0.15} />
-          <directionalLight
-            position={[5, 3, 5]}
-            intensity={0.3}
-            color="#FDFBED"
-          />
+          <directionalLight position={[5, 3, 5]} intensity={0.3} color="#FDFBED" />
           <Orb />
           <Particles />
         </Canvas>
