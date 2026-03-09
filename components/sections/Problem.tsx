@@ -51,13 +51,13 @@ function PainCard({
 export default function Problem() {
   return (
     <section id="problem" className="py-24 md:py-32 px-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="section-container">
         <motion.h2
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="font-heading text-3xl md:text-5xl font-bold text-sx-cream"
+          className="font-heading text-3xl md:text-5xl font-bold text-sx-cream text-center"
         >
           Ваш бизнес теряет деньги прямо сейчас
         </motion.h2>

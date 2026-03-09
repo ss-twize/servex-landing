@@ -1,6 +1,6 @@
 "use client";
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useCallback } from "react";
 
 const features = [
   {
@@ -35,6 +35,54 @@ const features = [
   },
 ];
 
+function FeatureCard({
+  feature,
+  index,
+  inView,
+}: {
+  feature: (typeof features)[number];
+  index: number;
+  inView: boolean;
+}) {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{
+        duration: 0.5,
+        delay: index * 0.1,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="bg-sx-card border border-sx-border rounded-2xl p-6 md:p-8 transition-all duration-300 hover:border-sx-accent/50 hover:shadow-[0_0_30px_rgba(0,240,144,0.08)] relative overflow-hidden"
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {isHovered && (
+        <div
+          className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-300"
+          style={{
+            background: `radial-gradient(circle 150px at ${mousePos.x}px ${mousePos.y}px, rgba(0,240,144,0.08), transparent)`,
+          }}
+        />
+      )}
+      <h3 className="relative z-10 font-heading font-bold text-xl text-sx-cream">
+        {feature.title}
+      </h3>
+      <p className="relative z-10 text-sx-secondary text-base leading-relaxed mt-3">
+        {feature.description}
+      </p>
+    </motion.div>
+  );
+}
+
 export default function Features() {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-80px" });
@@ -62,24 +110,7 @@ export default function Features() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
           {features.map((feature, i) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 24 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.5,
-                delay: i * 0.1,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="bg-sx-card border border-sx-border rounded-2xl p-6 md:p-8 transition-all duration-300 hover:border-sx-accent/50 hover:shadow-[0_0_30px_rgba(0,240,144,0.08)]"
-            >
-              <h3 className="font-heading font-bold text-xl text-sx-cream">
-                {feature.title}
-              </h3>
-              <p className="text-sx-secondary text-base leading-relaxed mt-3">
-                {feature.description}
-              </p>
-            </motion.div>
+            <FeatureCard key={feature.title} feature={feature} index={i} inView={inView} />
           ))}
         </div>
       </div>

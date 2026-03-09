@@ -333,14 +333,14 @@ export default function Platform() {
   return (
     <section id="platform" className="relative">
       {/* Heading */}
-      <div className="relative z-10 pt-24 pb-8 px-6 max-w-7xl mx-auto">
+      <div className="relative z-10 pt-24 pb-8 section-container">
         <AnimateOnScroll>
-          <p className="text-xs tracking-[0.3em] text-sx-muted uppercase mb-4">
+          <p className="text-xs tracking-[0.3em] text-sx-muted uppercase mb-4 text-center">
             ПЛАТФОРМА
           </p>
         </AnimateOnScroll>
         <AnimateOnScroll delay={0.05}>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-sx-cream">
+          <h2 className="text-3xl md:text-5xl font-heading font-bold text-sx-cream text-center">
             Полный контроль
           </h2>
         </AnimateOnScroll>
@@ -352,7 +352,7 @@ export default function Platform() {
       </div>
 
       {/* Mobile: normal layout */}
-      <div className="md:hidden px-6 pb-24 max-w-7xl mx-auto">
+      <div className="md:hidden pb-24 section-container">
         <AnimateOnScroll delay={0.2}>
           <DashboardMockup activeTab={activeTab} setActiveTab={setActiveTab} />
         </AnimateOnScroll>

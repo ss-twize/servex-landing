@@ -47,9 +47,9 @@ export default function FAQ() {
 
   return (
     <section id="faq" className="py-24 md:py-32 px-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="section-container">
         <AnimateOnScroll>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-sx-cream">
+          <h2 className="text-3xl md:text-5xl font-heading font-bold text-sx-cream text-center">
             Вопросы
           </h2>
         </AnimateOnScroll>

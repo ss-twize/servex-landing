@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Button from "@/components/ui/Button";
@@ -65,6 +65,16 @@ function CheckIcon({ muted = false }: { muted?: boolean }) {
   );
 }
 
+function useSpotlight() {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
+  return { mousePos, isHovered, setIsHovered, handleMouseMove };
+}
+
 function formatPrice(n: number) {
   return n.toLocaleString("ru-RU");
 }
@@ -73,6 +83,9 @@ export default function Pricing() {
   const { openBooking } = useDemoBooking();
   const [selectedPeriod, setSelectedPeriod] = useState(3);
   const pricing = pricingData[selectedPeriod];
+  const spot1 = useSpotlight();
+  const spot2 = useSpotlight();
+  const spot3 = useSpotlight();
 
   return (
     <section id="pricing" className="py-24 md:py-32 px-6 overflow-hidden">
@@ -115,8 +128,21 @@ export default function Pricing() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-14 items-stretch">
           {/* Card 1: Начало */}
           <AnimateOnScroll delay={0}>
-            <div className="h-full bg-sx-card border border-sx-accent/50 rounded-2xl p-8 shadow-[0_0_40px_rgba(0,240,144,0.1)] flex flex-col">
-              <h3 className="font-heading text-2xl font-bold text-sx-cream">
+            <div
+              className="h-full bg-sx-card border border-sx-accent/50 rounded-2xl p-8 shadow-[0_0_40px_rgba(0,240,144,0.1)] flex flex-col relative overflow-hidden"
+              onMouseMove={spot1.handleMouseMove}
+              onMouseEnter={() => spot1.setIsHovered(true)}
+              onMouseLeave={() => spot1.setIsHovered(false)}
+            >
+              {spot1.isHovered && (
+                <div
+                  className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-300"
+                  style={{
+                    background: `radial-gradient(circle 150px at ${spot1.mousePos.x}px ${spot1.mousePos.y}px, rgba(0,240,144,0.08), transparent)`,
+                  }}
+                />
+              )}
+              <h3 className="relative z-10 font-heading text-2xl font-bold text-sx-cream">
                 Начало
               </h3>
               <p className="text-sx-muted text-sm mt-1">
@@ -186,8 +212,21 @@ export default function Pricing() {
 
           {/* Card 2: Развитие */}
           <AnimateOnScroll delay={0.1}>
-            <div className="h-full bg-sx-card border border-sx-border rounded-2xl p-8 flex flex-col">
-              <div className="flex items-center gap-3">
+            <div
+              className="h-full bg-sx-card border border-sx-border rounded-2xl p-8 flex flex-col relative overflow-hidden"
+              onMouseMove={spot2.handleMouseMove}
+              onMouseEnter={() => spot2.setIsHovered(true)}
+              onMouseLeave={() => spot2.setIsHovered(false)}
+            >
+              {spot2.isHovered && (
+                <div
+                  className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-300"
+                  style={{
+                    background: `radial-gradient(circle 150px at ${spot2.mousePos.x}px ${spot2.mousePos.y}px, rgba(0,240,144,0.08), transparent)`,
+                  }}
+                />
+              )}
+              <div className="relative z-10 flex items-center gap-3">
                 <h3 className="font-heading text-2xl font-bold text-sx-cream">
                   Развитие
                 </h3>
@@ -218,8 +257,21 @@ export default function Pricing() {
 
           {/* Card 3: Масштабирование */}
           <AnimateOnScroll delay={0.2}>
-            <div className="h-full bg-sx-card border border-sx-border rounded-2xl p-8 flex flex-col">
-              <h3 className="font-heading text-2xl font-bold text-sx-cream">
+            <div
+              className="h-full bg-sx-card border border-sx-border rounded-2xl p-8 flex flex-col relative overflow-hidden"
+              onMouseMove={spot3.handleMouseMove}
+              onMouseEnter={() => spot3.setIsHovered(true)}
+              onMouseLeave={() => spot3.setIsHovered(false)}
+            >
+              {spot3.isHovered && (
+                <div
+                  className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-300"
+                  style={{
+                    background: `radial-gradient(circle 150px at ${spot3.mousePos.x}px ${spot3.mousePos.y}px, rgba(0,240,144,0.08), transparent)`,
+                  }}
+                />
+              )}
+              <h3 className="relative z-10 font-heading text-2xl font-bold text-sx-cream">
                 Масштабирование
               </h3>
               <p className="text-sx-muted text-sm mt-1">

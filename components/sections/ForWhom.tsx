@@ -22,7 +22,7 @@ const situations = [
 export default function ForWhom() {
   return (
     <section id="for-whom" className="py-24 md:py-32 px-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="section-container">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
           {/* Left 40% — sticky question */}
           <div className="lg:w-[40%]">

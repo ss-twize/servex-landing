@@ -28,7 +28,7 @@ export default function Hero() {
     <section className="relative min-h-screen flex flex-col overflow-hidden">
       {/* Main content area — vertically centered */}
       <div className="flex-1 flex items-center justify-center w-full px-6">
-        <div className="w-full max-w-[1200px] flex items-center justify-between relative">
+        <div className="w-[85%] max-w-[1400px] flex items-center justify-between relative">
           {/* TEXT — left side */}
           <motion.div
             className="relative z-10 max-w-[55%]"
