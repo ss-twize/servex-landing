@@ -136,7 +136,7 @@ export default function Pricing() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           style={{ transformOrigin: "bottom center" }}
           whileHover={{ rotate: 0, scale: 0.97, opacity: 0.9 }}
-          animate={{ rotate: -2, scale: 0.93, opacity: 0.75 }}
+          animate={{ rotate: -2, scale: 0.93, opacity: 0.88 }}
         >
           <div
             className="relative bg-sx-card border border-sx-border rounded-2xl p-8"
@@ -275,7 +275,7 @@ export default function Pricing() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           style={{ transformOrigin: "bottom center" }}
           whileHover={{ rotate: 0, scale: 0.97, opacity: 0.9 }}
-          animate={{ rotate: 2, scale: 0.93, opacity: 0.75 }}
+          animate={{ rotate: 2, scale: 0.93, opacity: 0.88 }}
         >
           <div
             className="relative bg-sx-card border border-sx-border rounded-2xl p-8"

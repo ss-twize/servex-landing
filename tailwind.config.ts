@@ -10,12 +10,13 @@ const config: Config = {
       colors: {
         sx: {
           deep: "#020E0E",
-          card: "#0C1618",
-          border: "#003D3A",
-          cream: "#FDFBED",
+          card: "#0E1C1F",
+          border: "#1E4A46",
+          cream: "#F0F6F6",
           accent: "#01DE82",
           "accent-hover": "#00C472",
-          muted: "#7A8A8A",
+          muted: "#8EAFAD",
+          subtle: "#3D6662",
         },
       },
       fontFamily: {

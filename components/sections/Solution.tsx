@@ -96,7 +96,7 @@ function SolutionItem({
         className="absolute pointer-events-none select-none font-heading font-black leading-none text-sx-cream"
         style={{
           fontSize: "10vw",
-          opacity: 0.04,
+          opacity: 0.025,
           top: "50%",
           right: "1rem",
           transform: "translateY(-50%)",
@@ -136,7 +136,7 @@ export default function Solution() {
               className="absolute font-heading font-black leading-none text-sx-cream select-none"
               style={{
                 fontSize: "10vw",
-                opacity: 0.04,
+                opacity: 0.025,
                 top: `${10 + i * 18}%`,
                 left: i % 2 === 0 ? "5%" : "55%",
               }}

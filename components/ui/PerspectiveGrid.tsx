@@ -5,8 +5,8 @@ export default function PerspectiveGrid({ className = "" }: { className?: string
         className="absolute inset-0"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(1,222,130,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(1,222,130,0.04) 1px, transparent 1px)
+            linear-gradient(rgba(1,222,130,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(1,222,130,0.06) 1px, transparent 1px)
           `,
           backgroundSize: "60px 60px",
           transform: "perspective(600px) rotateX(25deg) scale(1.5)",

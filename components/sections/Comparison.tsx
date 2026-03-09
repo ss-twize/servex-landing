@@ -38,7 +38,7 @@ const cards: CardData[] = [
     translateY: 40,
     hoverTranslateY: 30,
     scale: 0.97,
-    opacity: 0.7,
+    opacity: 0.85,
   },
   {
     title: "Администратор",
@@ -98,11 +98,11 @@ function ComparisonCard({ card }: { card: CardData }) {
               border: "1px solid #01DE82",
               boxShadow:
                 "0 0 40px rgba(1,222,130,0.12), 0 0 80px rgba(1,222,130,0.06)",
-              background: "#0C1618",
+              background: "#0E1C1F",
             }
           : {
-              border: "1px solid #003D3A",
-              background: "#0C1618",
+              border: "1px solid #1E4A46",
+              background: "#0E1C1F",
             }
       }
     >
@@ -198,11 +198,11 @@ export default function Comparison() {
                         border: "1px solid #01DE82",
                         boxShadow:
                           "0 0 30px rgba(1,222,130,0.10), 0 0 60px rgba(1,222,130,0.05)",
-                        background: "#0C1618",
+                        background: "#0E1C1F",
                       }
                     : {
-                        border: "1px solid #003D3A",
-                        background: "#0C1618",
+                        border: "1px solid #1E4A46",
+                        background: "#0E1C1F",
                         opacity: card.opacity,
                       }
                 }

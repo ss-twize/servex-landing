@@ -6,11 +6,17 @@
   body {
     @apply bg-sx-deep text-sx-cream font-body antialiased;
   }
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-sx-cream;
+  }
+  p {
+    color: #8EAFAD; /* sx-muted — still readable */
+  }
   ::selection {
     @apply bg-sx-accent/20 text-sx-cream;
   }
   * {
     scrollbar-width: thin;
-    scrollbar-color: #003D3A #020E0E;
+    scrollbar-color: #1E4A46 #020E0E;
   }
 }

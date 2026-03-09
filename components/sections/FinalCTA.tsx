@@ -34,7 +34,7 @@ export default function FinalCTA() {
           <ParallaxLayer speed={0.15} className="w-full flex items-center justify-center">
             <span
               className="font-heading font-black leading-none tracking-tighter text-sx-cream whitespace-nowrap"
-              style={{ fontSize: "20vw", opacity: 0.06 }}
+              style={{ fontSize: "20vw", opacity: 0.04 }}
             >
               СЕРВЕКС
             </span>

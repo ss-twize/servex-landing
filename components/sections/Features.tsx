@@ -170,7 +170,7 @@ export default function Features() {
           className="font-heading font-black text-sx-cream whitespace-nowrap"
           style={{
             fontSize: "clamp(60px, 10vw, 140px)",
-            opacity: 0.03,
+            opacity: 0.02,
             letterSpacing: "0.1em",
             transform: "translateX(-5%)",
           }}

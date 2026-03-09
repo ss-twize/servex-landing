@@ -72,7 +72,7 @@ function Slider({ label, value, min, max, step, suffix = "", onChange }: SliderP
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full h-2 rounded-full appearance-none cursor-pointer"
         style={{
-          background: `linear-gradient(to right, #01DE82 0%, #01DE82 ${pct}%, #003D3A ${pct}%, #003D3A 100%)`,
+          background: `linear-gradient(to right, #01DE82 0%, #01DE82 ${pct}%, #1E4A46 ${pct}%, #1E4A46 100%)`,
         }}
       />
     </div>
@@ -96,8 +96,8 @@ export default function Calculator() {
           className="absolute top-0 right-[-5vw] font-heading font-black leading-none select-none"
           style={{
             fontSize: "40vw",
-            opacity: 0.03,
-            color: "#FDFBED",
+            opacity: 0.02,
+            color: "#F0F6F6",
             lineHeight: 1,
           }}
         >
@@ -179,7 +179,7 @@ export default function Calculator() {
                   className="absolute font-heading font-black leading-none text-sx-cream select-none pointer-events-none"
                   style={{
                     fontSize: "clamp(3rem, 8vw, 9vw)",
-                    opacity: 0.06,
+                    opacity: 0.04,
                     filter: "blur(2px)",
                     top: "-0.08em",
                     left: "0.05em",

@@ -13,7 +13,7 @@ export default function PageWatermark() {
     >
       <span
         className="font-heading font-black text-[20vw] leading-none tracking-tighter text-sx-cream whitespace-nowrap"
-        style={{ opacity: 0.018 }}
+        style={{ opacity: 0.012 }}
       >
         СЕРВЕКС
       </span>

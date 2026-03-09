@@ -61,7 +61,7 @@ export default function Problem() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "repeating-linear-gradient(0deg, rgba(1,222,130,0.025) 0px, rgba(1,222,130,0.025) 1px, transparent 1px, transparent 60px)",
+              "repeating-linear-gradient(0deg, rgba(1,222,130,0.015) 0px, rgba(1,222,130,0.015) 1px, transparent 1px, transparent 60px)",
           }}
         />
       </ParallaxLayer>
@@ -84,7 +84,7 @@ export default function Problem() {
 
           {/* Card A — wide (col-span-2): Пропущенные заявки */}
           <AnimateOnScroll delay={0.15} className="md:col-span-2">
-            <div className="bg-sx-card/80 backdrop-blur-sm border border-sx-border rounded-2xl p-6 md:p-8 h-full hover:border-sx-accent/50 transition-colors duration-300 flex flex-col md:flex-row md:items-center gap-6">
+            <div className="bg-sx-card/90 backdrop-blur-sm border border-sx-border rounded-2xl p-6 md:p-8 h-full hover:border-sx-accent/50 transition-colors duration-300 flex flex-col md:flex-row md:items-center gap-6">
               <div className="flex-1">
                 <div className="text-sx-accent mb-4">
                   <MissedIcon />
@@ -111,7 +111,7 @@ export default function Problem() {
 
           {/* Card B — Медленные ответы */}
           <AnimateOnScroll delay={0.25}>
-            <div className="bg-sx-card/80 backdrop-blur-sm border border-sx-border rounded-2xl p-6 md:p-8 h-full hover:border-sx-accent/50 transition-colors duration-300">
+            <div className="bg-sx-card/90 backdrop-blur-sm border border-sx-border rounded-2xl p-6 md:p-8 h-full hover:border-sx-accent/50 transition-colors duration-300">
               <div className="text-sx-accent mb-4">
                 <ClockIcon />
               </div>
@@ -126,7 +126,7 @@ export default function Problem() {
 
           {/* Card C — Нестабильное качество */}
           <AnimateOnScroll delay={0.3}>
-            <div className="bg-sx-card/80 backdrop-blur-sm border border-sx-border rounded-2xl p-6 md:p-8 h-full hover:border-sx-accent/50 transition-colors duration-300">
+            <div className="bg-sx-card/90 backdrop-blur-sm border border-sx-border rounded-2xl p-6 md:p-8 h-full hover:border-sx-accent/50 transition-colors duration-300">
               <div className="text-sx-accent mb-4">
                 <QualityIcon />
               </div>
@@ -141,7 +141,7 @@ export default function Problem() {
 
           {/* Card D — Нет прозрачности (row-span-2 on md) */}
           <AnimateOnScroll delay={0.35} className="md:col-span-2 md:row-span-1">
-            <div className="bg-sx-card/80 backdrop-blur-sm border border-sx-border rounded-2xl p-6 md:p-8 h-full hover:border-sx-accent/50 transition-colors duration-300 flex flex-col">
+            <div className="bg-sx-card/90 backdrop-blur-sm border border-sx-border rounded-2xl p-6 md:p-8 h-full hover:border-sx-accent/50 transition-colors duration-300 flex flex-col">
               <div className="text-sx-accent mb-4">
                 <EyeOffIcon />
               </div>
