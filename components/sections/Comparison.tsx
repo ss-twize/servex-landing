@@ -1,10 +1,8 @@
 "use client";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 
-const comparisons = [
+const rows = [
   {
     criterion: "Скорость ответа",
     chatbot: "Мгновенно, но шаблонно",
@@ -13,117 +11,109 @@ const comparisons = [
   },
   {
     criterion: "Доступность",
-    chatbot: "24/7, но без понимания",
-    admin: "Только в рабочую смену",
-    servex: "24/7 с полным пониманием контекста",
+    chatbot: "24/7",
+    admin: "Только в смену",
+    servex: "24/7",
   },
   {
     criterion: "Стабильность качества",
     chatbot: "Одинаково плохо",
     admin: "Зависит от настроения",
-    servex: "Одинаково хорошо, всегда",
+    servex: "Одинаково хорошо",
   },
   {
     criterion: "Запись / перенос / отмена",
     chatbot: "Не умеет",
     admin: "Умеет, но с ошибками",
-    servex: "Полный цикл без участия человека",
+    servex: "Полный цикл",
   },
   {
     criterion: "Аналитика",
-    chatbot: "Отсутствует",
-    admin: "Ручные отчёты, если успеет",
-    servex: "Встроенная, в реальном времени",
+    chatbot: "Нет",
+    admin: "Нет",
+    servex: "Встроенная",
   },
   {
     criterion: "Стоимость",
-    chatbot: "Дёшево, но бесполезно",
-    admin: "Дорого — зарплата, больничные, отпуска",
-    servex: "Предсказуемо и окупаемо",
+    chatbot: "Дёшево",
+    admin: "Дорого (зарплата)",
+    servex: "Предсказуемо",
   },
   {
     criterion: "Масштабируемость",
-    chatbot: "Ограничена шаблонами",
+    chatbot: "Ограничена",
     admin: "Не масштабируется",
     servex: "Без ограничений",
   },
 ];
 
-function ComparisonRow({
-  item,
-  index,
-  isLast,
-}: {
-  item: (typeof comparisons)[0];
-  index: number;
-  isLast: boolean;
-}) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, x: -40 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{
-        duration: 0.5,
-        delay: index * 0.08,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className={`py-6 md:py-8 ${!isLast ? "border-b border-sx-border" : ""}`}
-    >
-      <h3 className="text-xl md:text-2xl font-heading font-bold text-sx-cream mb-4">
-        {item.criterion}
-      </h3>
-
-      <div className="space-y-1.5">
-        <div className="flex items-baseline gap-3">
-          <span className="text-sx-muted/50 text-xs font-heading uppercase tracking-wider shrink-0 w-28 md:w-36">
-            Чат-бот
-          </span>
-          <span className="text-sm text-sx-muted">{item.chatbot}</span>
-        </div>
-
-        <div className="flex items-baseline gap-3">
-          <span className="text-sx-muted/50 text-xs font-heading uppercase tracking-wider shrink-0 w-28 md:w-36">
-            Администратор
-          </span>
-          <span className="text-sm text-sx-muted">{item.admin}</span>
-        </div>
-
-        <div className="flex items-baseline gap-3 mt-3">
-          <span className="text-sx-accent/60 text-xs font-heading uppercase tracking-wider shrink-0 w-28 md:w-36">
-            СЕРВЕКС
-          </span>
-          <span className="text-lg md:text-xl text-sx-accent font-medium border-l-2 border-sx-accent pl-4">
-            {item.servex}
-          </span>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 export default function Comparison() {
-  return (
-    <SectionWrapper id="comparison">
-      <AnimateOnScroll>
-        <h2 className="text-3xl md:text-5xl font-heading font-bold text-sx-cream">
-          Почему это не обычный чат-бот
-        </h2>
-      </AnimateOnScroll>
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { once: true, margin: "-80px" });
 
-      <div className="mt-12 md:mt-16">
-        {comparisons.map((item, i) => (
-          <ComparisonRow
-            key={item.criterion}
-            item={item}
-            index={i}
-            isLast={i === comparisons.length - 1}
-          />
-        ))}
+  return (
+    <section
+      ref={sectionRef}
+      id="comparison"
+      className="py-24 md:py-32 px-6"
+    >
+      <div className="section-container">
+        <motion.h2
+          initial={{ opacity: 0, y: 32 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="text-3xl md:text-5xl font-heading font-bold text-sx-cream text-center"
+        >
+          Почему это лучше живого администратора
+        </motion.h2>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-12 md:mt-16 overflow-x-auto rounded-2xl border border-sx-border bg-sx-card"
+        >
+          <table className="w-full min-w-[640px] text-left">
+            <thead>
+              <tr className="bg-sx-surface">
+                <th className="px-5 py-4 text-sm font-heading font-bold text-sx-cream">
+                  Критерий
+                </th>
+                <th className="px-5 py-4 text-sm font-heading font-bold text-sx-cream">
+                  Чат-бот
+                </th>
+                <th className="px-5 py-4 text-sm font-heading font-bold text-sx-cream">
+                  Администратор
+                </th>
+                <th className="px-5 py-4 text-sm font-heading font-bold text-sx-cream bg-sx-accent/10">
+                  СЕРВЕКС
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr
+                  key={row.criterion}
+                  className="border-t border-sx-border"
+                >
+                  <td className="px-5 py-4 text-sm text-sx-cream font-medium">
+                    {row.criterion}
+                  </td>
+                  <td className="px-5 py-4 text-sm text-sx-muted">
+                    {row.chatbot}
+                  </td>
+                  <td className="px-5 py-4 text-sm text-sx-muted">
+                    {row.admin}
+                  </td>
+                  <td className="px-5 py-4 text-sm text-sx-accent font-medium bg-sx-accent/5">
+                    {row.servex}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </motion.div>
       </div>
-    </SectionWrapper>
+    </section>
   );
 }

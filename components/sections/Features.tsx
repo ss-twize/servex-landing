@@ -1,125 +1,88 @@
 "use client";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 
 const features = [
   {
-    number: "01",
-    title: "Обработка обращений",
+    title: "Принимает поток обращений",
     description:
-      "Автоматический приём и маршрутизация входящих сообщений из всех каналов",
+      "СЕРВЕКС обрабатывает входящие сообщения клиентов и поддерживает диалог без потерь, пауз и ручной перегрузки команды.",
   },
   {
-    number: "02",
-    title: "Логика записи",
+    title: "Ведёт клиента до записи",
     description:
-      "Проверка доступности, подбор времени, подтверждение — без участия человека",
+      "Система не просто отвечает на вопросы, а доводит обращение до конкретного действия: записи на услугу в удобное время.",
   },
   {
-    number: "03",
-    title: "Переносы и отмены",
-    description: "Гибкая обработка изменений без потери клиента",
-  },
-  {
-    number: "04",
-    title: "Аналитика и отчёты",
+    title: "Управляет изменениями в расписании",
     description:
-      "Конверсии, загрузка, время ответа — всё в реальном времени",
+      "Переносы и отмены не превращаются в хаос: СЕРВЕКС корректно обновляет запись и удерживает порядок в клиентском потоке.",
   },
   {
-    number: "05",
-    title: "Контроль качества",
-    description: "Внутренние системы мониторинга и оценки работы",
-  },
-  {
-    number: "06",
-    title: "Настраиваемые сценарии",
+    title: "Работает без смен и выходных",
     description:
-      "Адаптация логики общения под специфику вашего бизнеса",
+      "Первая линия сервиса остаётся активной 24/7 — независимо от времени суток, загрузки или человеческого ресурса.",
+  },
+  {
+    title: "Встраивается в рабочий контур бизнеса",
+    description:
+      "СЕРВЕКС подключается к мессенджерам, календарям и системам записи, становясь частью реальной операционной модели бизнеса.",
+  },
+  {
+    title: "Делает сервис измеримым",
+    description:
+      "Платформа показывает обращения, записи и аналитику первой линии, чтобы владелец видел не только факт работы, но и её результат.",
   },
 ];
 
-function FeatureItem({
-  feature,
-  index,
-}: {
-  feature: (typeof features)[0];
-  index: number;
-}) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="group relative py-8"
-    >
-      <div className="flex items-start gap-5">
-        {/* Ghost number */}
-        <span className="text-5xl md:text-6xl font-heading font-extrabold text-sx-accent/15 group-hover:text-sx-accent/40 transition-colors duration-500 leading-none shrink-0 select-none">
-          {feature.number}
-        </span>
-
-        <div className="flex-1 min-w-0 pt-2">
-          {/* Line + title */}
-          <div className="flex items-center gap-4 mb-2">
-            <div className="h-px bg-sx-border flex-1 max-w-[40px] group-hover:bg-sx-accent/40 transition-colors duration-500" />
-            <h3 className="text-xl md:text-2xl font-heading font-bold text-sx-cream">
-              {feature.title}
-            </h3>
-          </div>
-
-          {/* Description */}
-          <p className="text-base text-sx-secondary mt-2 ml-[56px]">
-            {feature.description}
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 export default function Features() {
-  const leftColumn = features.slice(0, 3);
-  const rightColumn = features.slice(3, 6);
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   return (
-    <SectionWrapper id="features">
-      <AnimateOnScroll>
-        <h2 className="text-3xl md:text-5xl font-heading font-bold text-sx-cream">
-          Возможности
-        </h2>
-      </AnimateOnScroll>
+    <section
+      ref={sectionRef}
+      id="features"
+      className="py-24 md:py-32 px-6"
+    >
+      <div className="section-container">
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center"
+        >
+          <h2 className="text-3xl md:text-5xl font-heading font-bold text-sx-cream">
+            Возможности
+          </h2>
+          <p className="text-lg md:text-xl text-sx-secondary mt-4 max-w-2xl mx-auto">
+            Не просто отвечает клиентам. Управляет первой линией сервиса.
+          </p>
+        </motion.div>
 
-      {/* Desktop: two columns */}
-      <div className="hidden lg:grid grid-cols-2 gap-x-16 mt-12">
-        <div>
-          {leftColumn.map((f, i) => (
-            <FeatureItem key={f.number} feature={f} index={i} />
-          ))}
-        </div>
-        <div>
-          {rightColumn.map((f, i) => (
-            <FeatureItem key={f.number} feature={f} index={i + 3} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
+          {features.map((feature, i) => (
+            <motion.div
+              key={feature.title}
+              initial={{ opacity: 0, y: 24 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{
+                duration: 0.5,
+                delay: i * 0.1,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="bg-sx-card border border-sx-border rounded-2xl p-6 md:p-8 transition-all duration-300 hover:border-sx-accent/50 hover:shadow-[0_0_30px_rgba(0,240,144,0.08)]"
+            >
+              <h3 className="font-heading font-bold text-xl text-sx-cream">
+                {feature.title}
+              </h3>
+              <p className="text-sx-secondary text-base leading-relaxed mt-3">
+                {feature.description}
+              </p>
+            </motion.div>
           ))}
         </div>
       </div>
-
-      {/* Mobile: single column */}
-      <div className="lg:hidden mt-8">
-        {features.map((f, i) => (
-          <FeatureItem key={f.number} feature={f} index={i} />
-        ))}
-      </div>
-    </SectionWrapper>
+    </section>
   );
 }

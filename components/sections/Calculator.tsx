@@ -61,7 +61,7 @@ function CalcSlider({ label, value, min, max, step, suffix = "", onChange }: Sli
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="calc-slider w-full h-2 rounded-full appearance-none cursor-pointer"
+        className="w-full h-1.5 bg-sx-border rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-lg [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-0"
         style={{
           background: `linear-gradient(to right, #00F090 0%, #00F090 ${pct}%, #2A4A47 ${pct}%, #2A4A47 100%)`,
         }}
@@ -83,7 +83,7 @@ export default function Calculator() {
 
   return (
     <section id="calculator" className="py-24 md:py-40 px-6 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto relative">
+      <div className="section-container relative">
         {/* Section label */}
         <motion.h2
           initial={{ opacity: 0, y: 24 }}
@@ -114,7 +114,7 @@ export default function Calculator() {
           {/* Main number */}
           <div
             className="relative font-heading font-extrabold text-sx-hot leading-none tabular-nums text-center"
-            style={{ fontSize: "clamp(4rem, 15vw, 12rem)" }}
+            style={{ fontSize: "clamp(2.5rem, 10vw, 7rem)" }}
           >
             {lossDisplay}
           </div>
@@ -163,28 +163,6 @@ export default function Calculator() {
         </div>
       </div>
 
-      <style jsx>{`
-        .calc-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: #00F090;
-          cursor: pointer;
-          border: 2px solid #050A0A;
-          box-shadow: 0 0 10px rgba(0, 240, 144, 0.4);
-        }
-        .calc-slider::-moz-range-thumb {
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: #00F090;
-          cursor: pointer;
-          border: 2px solid #050A0A;
-          box-shadow: 0 0 10px rgba(0, 240, 144, 0.4);
-        }
-      `}</style>
     </section>
   );
 }
