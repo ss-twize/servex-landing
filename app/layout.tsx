@@ -1,20 +1,28 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter } from "next/font/google";
+import { Syne, DM_Sans } from "next/font/google";
+import dynamic from "next/dynamic";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { DemoBookingProvider } from "@/components/ui/DemoBookingContext";
 import DemoBooking from "@/components/ui/DemoBooking";
 import PageWatermark from "@/components/ui/PageWatermark";
+import NoiseGrain from "@/components/ui/NoiseGrain";
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-space-grotesk",
+const CustomCursor = dynamic(() => import("@/components/ui/CustomCursor"), {
+  ssr: false,
 });
 
-const inter = Inter({
-  subsets: ["latin", "latin-ext", "cyrillic"],
-  variable: "--font-inter",
+const syne = Syne({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-syne",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-dm-sans",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -40,9 +48,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${spaceGrotesk.variable} ${inter.variable} scroll-smooth`}>
+    <html lang="ru" className={`${syne.variable} ${dmSans.variable} scroll-smooth`}>
       <body className="bg-sx-deep text-sx-cream font-body">
         <DemoBookingProvider>
+          <CustomCursor />
+          <NoiseGrain />
           <PageWatermark />
           <Header />
           {children}

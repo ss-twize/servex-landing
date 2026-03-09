@@ -72,7 +72,7 @@ function Slider({ label, value, min, max, step, suffix = "", onChange }: SliderP
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full h-2 rounded-full appearance-none cursor-pointer"
         style={{
-          background: `linear-gradient(to right, #01DE82 0%, #01DE82 ${pct}%, #1E4A46 ${pct}%, #1E4A46 100%)`,
+          background: `linear-gradient(to right, #00F090 0%, #00F090 ${pct}%, #2A4A47 ${pct}%, #2A4A47 100%)`,
         }}
       />
     </div>
@@ -97,7 +97,7 @@ export default function Calculator() {
           style={{
             fontSize: "40vw",
             opacity: 0.02,
-            color: "#F0F6F6",
+            color: "#EEFCF9",
             lineHeight: 1,
           }}
         >
@@ -220,19 +220,19 @@ export default function Calculator() {
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: #01DE82;
+          background: #00F090;
           cursor: pointer;
-          border: 2px solid #020E0E;
-          box-shadow: 0 0 8px rgba(1, 222, 130, 0.3);
+          border: 2px solid #050A0A;
+          box-shadow: 0 0 8px rgba(0, 240, 144, 0.3);
         }
         input[type="range"]::-moz-range-thumb {
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: #01DE82;
+          background: #00F090;
           cursor: pointer;
-          border: 2px solid #020E0E;
-          box-shadow: 0 0 8px rgba(1, 222, 130, 0.3);
+          border: 2px solid #050A0A;
+          box-shadow: 0 0 8px rgba(0, 240, 144, 0.3);
         }
       `}</style>
     </SectionWrapper>

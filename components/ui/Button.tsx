@@ -27,7 +27,7 @@ export default function Button({
   };
   const variants = {
     primary:
-      "bg-sx-accent text-sx-deep hover:bg-sx-accent-hover shadow-[0_0_20px_rgba(1,222,130,0.15)] hover:shadow-[0_0_30px_rgba(1,222,130,0.25)]",
+      "bg-sx-accent text-sx-deep hover:bg-sx-accent-hover shadow-[0_0_20px_rgba(0,240,144,0.15)] hover:shadow-[0_0_30px_rgba(0,240,144,0.25)] glitch-hover",
     secondary:
       "border border-sx-border text-sx-cream hover:border-sx-accent hover:text-sx-accent",
   };

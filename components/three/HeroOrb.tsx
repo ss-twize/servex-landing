@@ -60,7 +60,7 @@ function Orb() {
       {/* Point light for glow pulse */}
       <pointLight
         ref={glowRef}
-        color="#01DE82"
+        color="#00F090"
         intensity={1.5}
         distance={12}
         decay={2}
@@ -78,7 +78,7 @@ function Orb() {
       {/* Green energy wireframe */}
       <mesh ref={wireRef} geometry={icoGeo}>
         <meshBasicMaterial
-          color="#01DE82"
+          color="#00F090"
           wireframe
           transparent
           opacity={0.35}
@@ -88,7 +88,7 @@ function Orb() {
       {/* Secondary finer wireframe for depth */}
       <mesh geometry={icoGeo} rotation={[0.4, 0.3, 0.1]}>
         <meshBasicMaterial
-          color="#01DE82"
+          color="#00F090"
           wireframe
           transparent
           opacity={0.12}
@@ -98,7 +98,7 @@ function Orb() {
       {/* Outer glow shell */}
       <mesh geometry={glowGeo}>
         <meshBasicMaterial
-          color="#01DE82"
+          color="#00F090"
           transparent
           opacity={0.04}
           side={THREE.BackSide}
@@ -144,7 +144,7 @@ function Particles({ count = 40 }: { count?: number }) {
         />
       </bufferGeometry>
       <pointsMaterial
-        color="#01DE82"
+        color="#00F090"
         size={0.02}
         transparent
         opacity={0.6}

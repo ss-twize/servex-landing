@@ -58,9 +58,9 @@ function StepItem({
         <motion.div
           className="w-4 h-4 rounded-full border-2 border-sx-accent"
           animate={{
-            backgroundColor: inView ? "#01DE82" : "transparent",
+            backgroundColor: inView ? "#00F090" : "transparent",
             boxShadow: inView
-              ? "0 0 16px rgba(1,222,130,0.5)"
+              ? "0 0 16px rgba(0,240,144,0.5)"
               : "none",
           }}
           transition={{ duration: 0.4 }}

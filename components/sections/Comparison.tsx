@@ -95,14 +95,14 @@ function ComparisonCard({ card }: { card: CardData }) {
       style={
         card.isServex
           ? {
-              border: "1px solid #01DE82",
+              border: "1px solid #00F090",
               boxShadow:
-                "0 0 40px rgba(1,222,130,0.12), 0 0 80px rgba(1,222,130,0.06)",
-              background: "#0E1C1F",
+                "0 0 40px rgba(0,240,144,0.12), 0 0 80px rgba(0,240,144,0.06)",
+              background: "#111B1E",
             }
           : {
-              border: "1px solid #1E4A46",
-              background: "#0E1C1F",
+              border: "1px solid #2A4A47",
+              background: "#111B1E",
             }
       }
     >
@@ -195,14 +195,14 @@ export default function Comparison() {
                 style={
                   card.isServex
                     ? {
-                        border: "1px solid #01DE82",
+                        border: "1px solid #00F090",
                         boxShadow:
-                          "0 0 30px rgba(1,222,130,0.10), 0 0 60px rgba(1,222,130,0.05)",
-                        background: "#0E1C1F",
+                          "0 0 30px rgba(0,240,144,0.10), 0 0 60px rgba(0,240,144,0.05)",
+                        background: "#111B1E",
                       }
                     : {
-                        border: "1px solid #1E4A46",
-                        background: "#0E1C1F",
+                        border: "1px solid #2A4A47",
+                        background: "#111B1E",
                         opacity: card.opacity,
                       }
                 }
