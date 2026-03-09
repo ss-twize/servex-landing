@@ -27,17 +27,24 @@ export default function FinalCTA() {
         <div className="relative z-10 section-container text-center">
           <AnimateOnScroll>
             <h2 className="text-4xl md:text-7xl font-heading font-extrabold text-sx-cream leading-tight">
-              Хватит терять клиентов
+              Хватит терять выручку
             </h2>
           </AnimateOnScroll>
 
           <AnimateOnScroll delay={0.1}>
             <p className="text-3xl md:text-5xl font-heading font-bold text-sx-accent mt-4 leading-tight">
-              Демо — бесплатно
+              Начните её растить
             </p>
           </AnimateOnScroll>
 
-          <AnimateOnScroll delay={0.2}>
+          <AnimateOnScroll delay={0.15}>
+            <p className="text-lg md:text-xl text-sx-secondary mt-6 max-w-2xl mx-auto">
+              Каждый пропущенный звонок и неотвеченное сообщение — это потерянные деньги.
+              СЕРВЕКС работает 24/7, чтобы ни один клиент не ушёл без записи.
+            </p>
+          </AnimateOnScroll>
+
+          <AnimateOnScroll delay={0.25}>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button size="lg" onClick={openBooking}>
                 Записаться на демо
@@ -48,7 +55,7 @@ export default function FinalCTA() {
             </div>
           </AnimateOnScroll>
 
-          <AnimateOnScroll delay={0.3}>
+          <AnimateOnScroll delay={0.35}>
             <p className="mt-10 text-sx-muted text-sm">
               Запуск от 1 дня · Без скрытых платежей · Бесплатная демонстрация
             </p>

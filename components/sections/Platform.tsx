@@ -346,6 +346,62 @@ export default function Platform() {
         </AnimateOnScroll>
       </div>
 
+      {/* Subtitle + Capability Callouts */}
+      <div className="relative z-10 section-container">
+        <AnimateOnScroll delay={0.1}>
+          <p className="text-sx-secondary text-center text-base md:text-lg max-w-2xl mx-auto mb-12">
+            Собственная платформа СЕРВЕКС даёт полную прозрачность работы цифрового администратора
+          </p>
+        </AnimateOnScroll>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto mt-12">
+          <AnimateOnScroll delay={0.1}>
+            <div className="bg-sx-card border border-sx-border/50 rounded-xl p-6">
+              <div className="w-9 h-9 rounded-lg bg-sx-accent/10 flex items-center justify-center mb-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sx-accent">
+                  <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <p className="text-sx-cream font-heading font-semibold text-sm">Мониторинг в реальном времени</p>
+              <p className="text-sx-muted text-sm mt-2">Следите за обращениями, записями и конверсией прямо сейчас</p>
+            </div>
+          </AnimateOnScroll>
+          <AnimateOnScroll delay={0.15}>
+            <div className="bg-sx-card border border-sx-border/50 rounded-xl p-6">
+              <div className="w-9 h-9 rounded-lg bg-sx-accent/10 flex items-center justify-center mb-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sx-accent">
+                  <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+              </div>
+              <p className="text-sx-cream font-heading font-semibold text-sm">Детальная аналитика</p>
+              <p className="text-sx-muted text-sm mt-2">Отчёты по загрузке, выручке и эффективности за любой период</p>
+            </div>
+          </AnimateOnScroll>
+          <AnimateOnScroll delay={0.2}>
+            <div className="bg-sx-card border border-sx-border/50 rounded-xl p-6">
+              <div className="w-9 h-9 rounded-lg bg-sx-accent/10 flex items-center justify-center mb-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sx-accent">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+              </div>
+              <p className="text-sx-cream font-heading font-semibold text-sm">Управление диалогами</p>
+              <p className="text-sx-muted text-sm mt-2">Читайте переписки, корректируйте сценарии, обучайте систему</p>
+            </div>
+          </AnimateOnScroll>
+          <AnimateOnScroll delay={0.25}>
+            <div className="bg-sx-card border border-sx-border/50 rounded-xl p-6">
+              <div className="w-9 h-9 rounded-lg bg-sx-accent/10 flex items-center justify-center mb-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sx-accent">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+              </div>
+              <p className="text-sx-cream font-heading font-semibold text-sm">Контроль расписания</p>
+              <p className="text-sx-muted text-sm mt-2">Полная картина записей, переносов и отмен по всем мастерам</p>
+            </div>
+          </AnimateOnScroll>
+        </div>
+      </div>
+
       {/* Desktop: sticky scroll expansion */}
       <div className="hidden md:block">
         <StickyPlatform />
@@ -356,6 +412,24 @@ export default function Platform() {
         <AnimateOnScroll delay={0.2}>
           <DashboardMockup activeTab={activeTab} setActiveTab={setActiveTab} />
         </AnimateOnScroll>
+      </div>
+
+      {/* What you can track */}
+      <div className="pb-24 section-container">
+        <AnimateOnScroll>
+          <h3 className="text-xl md:text-2xl font-heading font-bold text-sx-cream text-center mb-8">
+            Что можно отслеживать
+          </h3>
+        </AnimateOnScroll>
+        <div className="flex flex-wrap justify-center gap-3">
+          {["Конверсия обращений", "Время ответа", "Загрузка мастеров", "Выручка по дням", "Популярные услуги", "Источники обращений", "Отмены и переносы", "Повторные визиты"].map((item, i) => (
+            <AnimateOnScroll key={item} delay={i * 0.05}>
+              <div className="bg-sx-card border border-sx-border/50 rounded-full px-5 py-2.5 text-sm text-sx-secondary hover:text-sx-cream hover:border-sx-accent/30 transition-colors">
+                {item}
+              </div>
+            </AnimateOnScroll>
+          ))}
+        </div>
       </div>
     </section>
   );
