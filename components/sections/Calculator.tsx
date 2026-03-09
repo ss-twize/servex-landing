@@ -1,35 +1,26 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
-import ParallaxLayer from "@/components/ui/ParallaxLayer";
+import { motion } from "framer-motion";
 
-function formatCurrency(value: number): string {
+function formatRub(value: number): string {
   return value.toLocaleString("ru-RU").replace(/,/g, " ") + " ₽";
 }
 
-function AnimatedNumber({ value }: { value: number }) {
-  const [display, setDisplay] = useState(value);
-  const rafRef = useRef<number>(0);
-  const startRef = useRef(value);
+function useAnimatedNumber(target: number, duration = 400): string {
+  const [display, setDisplay] = useState(target);
+  const rafRef = useRef(0);
+  const startRef = useRef(target);
   const startTimeRef = useRef(0);
 
   const animate = useCallback(
-    (timestamp: number) => {
-      if (!startTimeRef.current) startTimeRef.current = timestamp;
-      const elapsed = timestamp - startTimeRef.current;
-      const duration = 500;
-      const progress = Math.min(elapsed / duration, 1);
+    (ts: number) => {
+      if (!startTimeRef.current) startTimeRef.current = ts;
+      const progress = Math.min((ts - startTimeRef.current) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      const current = Math.round(
-        startRef.current + (value - startRef.current) * eased
-      );
-      setDisplay(current);
-      if (progress < 1) {
-        rafRef.current = requestAnimationFrame(animate);
-      }
+      setDisplay(Math.round(startRef.current + (target - startRef.current) * eased));
+      if (progress < 1) rafRef.current = requestAnimationFrame(animate);
     },
-    [value]
+    [target, duration]
   );
 
   useEffect(() => {
@@ -38,12 +29,12 @@ function AnimatedNumber({ value }: { value: number }) {
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, animate]);
+  }, [target, animate]);
 
-  return <>{formatCurrency(display)}</>;
+  return formatRub(display);
 }
 
-type SliderProps = {
+type SliderDef = {
   label: string;
   value: number;
   min: number;
@@ -53,12 +44,12 @@ type SliderProps = {
   onChange: (v: number) => void;
 };
 
-function Slider({ label, value, min, max, step, suffix = "", onChange }: SliderProps) {
+function CalcSlider({ label, value, min, max, step, suffix = "", onChange }: SliderDef) {
   const pct = ((value - min) / (max - min)) * 100;
   return (
-    <div className="mb-8">
-      <div className="flex justify-between items-baseline mb-3">
-        <span className="text-sx-cream font-heading font-medium">{label}</span>
+    <div className="flex-1 min-w-0">
+      <div className="flex justify-between items-baseline mb-2">
+        <span className="text-sx-cream font-heading font-medium text-sm md:text-base">{label}</span>
         <span className="text-sx-accent font-heading font-bold text-lg tabular-nums">
           {value.toLocaleString("ru-RU")}{suffix}
         </span>
@@ -70,7 +61,7 @@ function Slider({ label, value, min, max, step, suffix = "", onChange }: SliderP
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-2 rounded-full appearance-none cursor-pointer"
+        className="calc-slider w-full h-2 rounded-full appearance-none cursor-pointer"
         style={{
           background: `linear-gradient(to right, #00F090 0%, #00F090 ${pct}%, #2A4A47 ${pct}%, #2A4A47 100%)`,
         }}
@@ -84,137 +75,96 @@ export default function Calculator() {
   const [avgTicket, setAvgTicket] = useState(3000);
   const [lossPercent, setLossPercent] = useState(15);
 
-  const potential = inquiries * avgTicket;
-  const monthlyLoss = Math.round(potential * (lossPercent / 100));
-  const savedMonthly = Math.round(monthlyLoss * 0.7);
+  const monthlyLoss = Math.round(inquiries * avgTicket * (lossPercent / 100));
+  const saved = Math.round(monthlyLoss * 0.7);
+
+  const lossDisplay = useAnimatedNumber(monthlyLoss);
+  const savedDisplay = useAnimatedNumber(saved);
 
   return (
-    <SectionWrapper id="calculator" className="relative overflow-hidden">
-      {/* Giant ghost ₽ background */}
-      <ParallaxLayer speed={0.3} className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div
-          className="absolute top-0 right-[-5vw] font-heading font-black leading-none select-none"
-          style={{
-            fontSize: "40vw",
-            opacity: 0.02,
-            color: "#EEFCF9",
-            lineHeight: 1,
-          }}
+    <section id="calculator" className="py-24 md:py-40 px-6 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto relative">
+        {/* Section label */}
+        <motion.h2
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="text-2xl md:text-3xl font-heading font-bold text-sx-secondary text-center"
         >
-          ₽
+          Сколько вы теряете
+        </motion.h2>
+
+        {/* Giant number centerpiece */}
+        <div className="relative flex flex-col items-center mt-10 md:mt-16">
+          {/* Ghost behind */}
+          <div
+            className="absolute pointer-events-none select-none font-heading font-extrabold text-sx-cream leading-none whitespace-nowrap"
+            style={{
+              fontSize: "20vw",
+              opacity: 0.04,
+              filter: "blur(3px)",
+              top: "-10px",
+            }}
+            aria-hidden
+          >
+            {lossDisplay}
+          </div>
+
+          {/* Main number */}
+          <div
+            className="relative font-heading font-extrabold text-sx-hot leading-none tabular-nums text-center"
+            style={{ fontSize: "clamp(4rem, 15vw, 12rem)" }}
+          >
+            {lossDisplay}
+          </div>
+          <p className="text-xl text-sx-muted mt-2">потерь в месяц</p>
+
+          {/* Saved counterpoint */}
+          <div className="mt-8 flex flex-col items-center">
+            <div
+              className="font-heading font-bold text-sx-accent leading-none tabular-nums text-center"
+              style={{ fontSize: "clamp(2rem, 6vw, 4rem)" }}
+            >
+              +{savedDisplay}
+            </div>
+            <p className="text-sx-muted text-lg mt-1">сохранённой выручки с СЕРВЕКС</p>
+          </div>
         </div>
-      </ParallaxLayer>
 
-      <div className="relative">
-        {/* Heading */}
-        <AnimateOnScroll>
-          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream">
-            Сколько теряет ваш бизнес
-          </h2>
-        </AnimateOnScroll>
-
-        {/* Asymmetric two-column layout */}
-        <div className="mt-12 md:mt-16 flex flex-col md:flex-row gap-8 md:gap-12 items-start">
-
-          {/* Left 55%: sliders */}
-          <div className="w-full md:w-[55%]">
-            <AnimateOnScroll delay={0.1}>
-              <div className="bg-sx-card border border-sx-border rounded-2xl p-6 md:p-8">
-                <Slider
-                  label="Заявок в месяц"
-                  value={inquiries}
-                  min={50}
-                  max={1000}
-                  step={10}
-                  onChange={setInquiries}
-                />
-                <Slider
-                  label="Средний чек"
-                  value={avgTicket}
-                  min={1000}
-                  max={10000}
-                  step={500}
-                  suffix=" ₽"
-                  onChange={setAvgTicket}
-                />
-                <Slider
-                  label="Процент потерь без системы"
-                  value={lossPercent}
-                  min={5}
-                  max={30}
-                  step={1}
-                  suffix="%"
-                  onChange={setLossPercent}
-                />
-
-                {/* Supporting metrics below sliders */}
-                <div className="mt-4 pt-6 border-t border-sx-border grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sx-muted text-xs mb-1">Потенциальная выручка</p>
-                    <p className="text-sx-cream font-heading font-bold tabular-nums">
-                      <AnimatedNumber value={potential} />
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sx-muted text-xs mb-1">Потери в год</p>
-                    <p className="text-red-400 font-heading font-bold tabular-nums">
-                      −<AnimatedNumber value={monthlyLoss * 12} />
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </AnimateOnScroll>
-          </div>
-
-          {/* Right 45%: giant animated number */}
-          <div className="w-full md:w-[45%] flex flex-col items-start md:pt-4">
-            <AnimateOnScroll delay={0.2}>
-              <p className="text-sx-muted text-sm uppercase tracking-widest mb-3 font-body">
-                Потери в месяц
-              </p>
-
-              {/* Ghost echo number (behind) */}
-              <div className="relative">
-                <div
-                  className="absolute font-heading font-black leading-none text-sx-cream select-none pointer-events-none"
-                  style={{
-                    fontSize: "clamp(3rem, 8vw, 9vw)",
-                    opacity: 0.04,
-                    filter: "blur(2px)",
-                    top: "-0.08em",
-                    left: "0.05em",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  <AnimatedNumber value={monthlyLoss} />
-                </div>
-                {/* Foreground number */}
-                <div
-                  className="relative font-heading font-black leading-none text-sx-cream tabular-nums"
-                  style={{ fontSize: "clamp(2.5rem, 8vw, 9vw)", zIndex: 1 }}
-                >
-                  <AnimatedNumber value={monthlyLoss} />
-                </div>
-              </div>
-
-              {/* С СЕРВЕКС savings */}
-              <div className="mt-6 md:mt-8">
-                <p className="text-sx-muted text-sm uppercase tracking-widest mb-2 font-body">
-                  С СЕРВЕКС сохраните
-                </p>
-                <div className="text-3xl md:text-4xl text-sx-accent font-bold font-heading tabular-nums">
-                  +<AnimatedNumber value={savedMonthly} />
-                </div>
-                <p className="text-sx-muted text-sm mt-1">в месяц (−70% потерь)</p>
-              </div>
-            </AnimateOnScroll>
-          </div>
-
+        {/* Sliders row */}
+        <div className="mt-12 md:mt-16 flex flex-col md:flex-row gap-8 md:gap-10">
+          <CalcSlider
+            label="Заявок в месяц"
+            value={inquiries}
+            min={50}
+            max={1000}
+            step={10}
+            onChange={setInquiries}
+          />
+          <CalcSlider
+            label="Средний чек"
+            value={avgTicket}
+            min={1000}
+            max={10000}
+            step={500}
+            suffix=" ₽"
+            onChange={setAvgTicket}
+          />
+          <CalcSlider
+            label="Потери без системы"
+            value={lossPercent}
+            min={5}
+            max={30}
+            step={1}
+            suffix="%"
+            onChange={setLossPercent}
+          />
         </div>
       </div>
 
       <style jsx>{`
-        input[type="range"]::-webkit-slider-thumb {
+        .calc-slider::-webkit-slider-thumb {
           -webkit-appearance: none;
           appearance: none;
           width: 20px;
@@ -223,18 +173,18 @@ export default function Calculator() {
           background: #00F090;
           cursor: pointer;
           border: 2px solid #050A0A;
-          box-shadow: 0 0 8px rgba(0, 240, 144, 0.3);
+          box-shadow: 0 0 10px rgba(0, 240, 144, 0.4);
         }
-        input[type="range"]::-moz-range-thumb {
+        .calc-slider::-moz-range-thumb {
           width: 20px;
           height: 20px;
           border-radius: 50%;
           background: #00F090;
           cursor: pointer;
           border: 2px solid #050A0A;
-          box-shadow: 0 0 8px rgba(0, 240, 144, 0.3);
+          box-shadow: 0 0 10px rgba(0, 240, 144, 0.4);
         }
       `}</style>
-    </SectionWrapper>
+    </section>
   );
 }

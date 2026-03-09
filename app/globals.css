@@ -56,6 +56,21 @@
   animation: glitch 0.3s ease-in-out;
 }
 
+/* Shake animation for Problem stat numbers */
+@keyframes shake {
+  0% { transform: translate(0); }
+  15% { transform: translate(-3px, 1px); }
+  30% { transform: translate(3px, -1px); }
+  45% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  75% { transform: translate(-1px, 1px); }
+  100% { transform: translate(0); }
+}
+
+/* Hide scrollbar for horizontal carousel */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* Marquee */
 @keyframes marquee {
   from { transform: translateX(0); }
