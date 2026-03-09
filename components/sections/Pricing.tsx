@@ -101,6 +101,12 @@ export default function Pricing() {
           </h2>
         </AnimateOnScroll>
 
+        <AnimateOnScroll delay={0.05}>
+          <p className="text-sx-secondary text-center mt-3 text-base">
+            Дешевле администратора. Без скрытых платежей.
+          </p>
+        </AnimateOnScroll>
+
         {/* Billing toggle */}
         <AnimateOnScroll delay={0.1}>
           <div className="flex justify-center mt-10">
@@ -148,10 +154,10 @@ export default function Pricing() {
                 />
               )}
               <h3 className="relative z-10 font-heading text-2xl font-bold text-sx-cream">
-                Начало
+                Агент
               </h3>
               <p className="text-sx-muted text-sm mt-1">
-                Цифровой администратор для вашего бизнеса
+                Полноценная замена первой линии сервиса
               </p>
 
               {/* Price */}
