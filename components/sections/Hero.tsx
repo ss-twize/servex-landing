@@ -144,8 +144,8 @@ export default function Hero() {
           <motion.div
             className="relative z-0"
             style={{
-              width: "clamp(300px, 35vw, 500px)",
-              height: "clamp(300px, 35vw, 500px)",
+              width: "clamp(420px, 48vw, 680px)",
+              height: "clamp(420px, 48vw, 680px)",
               overflow: "visible",
             }}
             initial={{ opacity: 0, scale: 0.85 }}
