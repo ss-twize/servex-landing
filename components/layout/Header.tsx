@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -46,6 +46,7 @@ function TubelightGlow() {
 export default function Header() {
   const [activeTab, setActiveTab] = useState(LOGO_ID);
   const [visible, setVisible] = useState(false);
+  const scrollLock = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* Detect hero stage for visibility */
   useEffect(() => {
@@ -64,6 +65,9 @@ export default function Header() {
 
   /* Track scroll position to highlight active section */
   const updateActiveOnScroll = useCallback(() => {
+    // Skip updates while a programmatic scroll is in progress
+    if (scrollLock.current) return;
+
     const offset = 200;
 
     // If near the bottom of the page — highlight Контакты
@@ -97,10 +101,15 @@ export default function Header() {
 
   const handleClick = (e: React.MouseEvent, item: (typeof navItems)[0]) => {
     e.preventDefault();
+
+    // Set destination immediately — lock scroll tracking for ~900ms
     setActiveTab(item.name);
+    if (scrollLock.current) clearTimeout(scrollLock.current);
+    scrollLock.current = setTimeout(() => {
+      scrollLock.current = null;
+    }, 900);
 
     if (item.url === "#footer") {
-      // Scroll to footer
       const footer = document.querySelector("footer");
       if (footer) footer.scrollIntoView({ behavior: "smooth" });
     } else if (item.url.startsWith("#")) {
@@ -112,6 +121,8 @@ export default function Header() {
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setActiveTab(LOGO_ID);
+    if (scrollLock.current) clearTimeout(scrollLock.current);
+    scrollLock.current = setTimeout(() => { scrollLock.current = null; }, 900);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
