@@ -7,6 +7,10 @@ import Platform from "@/components/sections/Platform";
 import Features from "@/components/sections/Features";
 import Integrations from "@/components/sections/Integrations";
 import ForWhom from "@/components/sections/ForWhom";
+import Pricing from "@/components/sections/Pricing";
+import HowItWorks from "@/components/sections/HowItWorks";
+import FAQ from "@/components/sections/FAQ";
+import FinalCTA from "@/components/sections/FinalCTA";
 
 export default function Home() {
   return (
@@ -20,6 +24,10 @@ export default function Home() {
       <Features />
       <Integrations />
       <ForWhom />
+      <Pricing />
+      <HowItWorks />
+      <FAQ />
+      <FinalCTA />
     </main>
   );
 }
