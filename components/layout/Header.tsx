@@ -44,7 +44,7 @@ export default function Header() {
 
   return (
     <motion.header
-      className="fixed top-0 left-1/2 -translate-x-1/2 z-50 pt-4 px-4"
+      className="fixed top-0 left-0 right-0 z-50 pt-4 flex justify-center"
       initial={{ opacity: 0, y: -20 }}
       animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
