@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 
@@ -153,7 +153,6 @@ function BookingsView() {
   const hours = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
   const days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 
-  // Appointment blocks: [dayIndex, startHourIndex, duration, label, color]
   type Appointment = [number, number, number, string, string];
   const appointments: Appointment[] = [
     [0, 0, 2, "Стрижка", "bg-sx-accent/30 border-sx-accent/50"],
@@ -173,7 +172,6 @@ function BookingsView() {
   return (
     <div className="bg-[#0A1214] rounded-lg border border-sx-border/50 overflow-x-auto">
       <div className="min-w-[540px]">
-        {/* Header */}
         <div className="grid grid-cols-[60px_repeat(6,1fr)] border-b border-sx-border/30">
           <div className="p-3" />
           {days.map((d) => (
@@ -186,7 +184,6 @@ function BookingsView() {
           ))}
         </div>
 
-        {/* Grid */}
         <div className="relative">
           {hours.map((h, hi) => (
             <div
@@ -224,10 +221,14 @@ function BookingsView() {
   );
 }
 
-/* ── Main Platform Section ── */
-export default function Platform() {
-  const [activeTab, setActiveTab] = useState<Tab>("Аналитика");
-
+/* ── Dashboard Mockup (shared between sticky and mobile) ── */
+function DashboardMockup({
+  activeTab,
+  setActiveTab,
+}: {
+  activeTab: Tab;
+  setActiveTab: (t: Tab) => void;
+}) {
   const tabContent: Record<Tab, React.ReactNode> = {
     Аналитика: <AnalyticsView />,
     Обращения: <MessagesView />,
@@ -235,70 +236,123 @@ export default function Platform() {
   };
 
   return (
-    <SectionWrapper id="platform">
-      <AnimateOnScroll>
-        <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center">
-          Полный контроль в одном интерфейсе
-        </h2>
-      </AnimateOnScroll>
-      <AnimateOnScroll delay={0.1}>
-        <p className="text-sx-muted text-lg md:text-xl text-center mt-4 max-w-2xl mx-auto">
-          Аналитика, обращения, записи — всё видно и управляемо
-        </p>
-      </AnimateOnScroll>
+    <div className="bg-sx-card border border-sx-border rounded-2xl overflow-hidden shadow-2xl shadow-black/40">
+      {/* Fake browser bar */}
+      <div className="flex items-center gap-2 px-5 py-3.5 border-b border-sx-border/70 bg-[#080F11]">
+        <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+        <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
+        <span className="w-3 h-3 rounded-full bg-[#28C840]" />
+        <span className="ml-4 text-sx-muted/40 text-xs font-body">
+          app.servex.pro
+        </span>
+      </div>
 
-      <AnimateOnScroll delay={0.2}>
-        <div className="mt-16 bg-sx-card border border-sx-border rounded-2xl overflow-hidden shadow-2xl shadow-black/30">
-          {/* Fake browser bar */}
-          <div className="flex items-center gap-2 px-5 py-3.5 border-b border-sx-border/70 bg-[#080F11]">
-            <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
-            <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
-            <span className="w-3 h-3 rounded-full bg-[#28C840]" />
-            <span className="ml-4 text-sx-muted/40 text-xs font-body">
-              app.servex.pro
-            </span>
-          </div>
-
-          {/* Tab navigation */}
-          <div className="flex border-b border-sx-border/50 bg-[#080F11]">
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`relative px-6 py-3 text-sm font-medium transition-colors ${
-                  activeTab === tab
-                    ? "text-sx-accent"
-                    : "text-sx-muted hover:text-sx-cream"
-                }`}
-              >
-                {tab}
-                {activeTab === tab && (
-                  <motion.div
-                    layoutId="platform-tab-underline"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-sx-accent"
-                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Tab content */}
-          <div className="p-5 min-h-[340px]">
-            <AnimatePresence mode="wait">
+      {/* Tab navigation */}
+      <div className="flex border-b border-sx-border/50 bg-[#080F11]">
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`relative px-6 py-3 text-sm font-medium transition-colors ${
+              activeTab === tab
+                ? "text-sx-accent"
+                : "text-sx-muted hover:text-sx-cream"
+            }`}
+          >
+            {tab}
+            {activeTab === tab && (
               <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-              >
-                {tabContent[activeTab]}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-      </AnimateOnScroll>
-    </SectionWrapper>
+                layoutId="platform-tab-underline"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-sx-accent"
+                transition={{ type: "spring", stiffness: 500, damping: 35 }}
+              />
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab content */}
+      <div className="p-5 min-h-[340px]">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+          >
+            {tabContent[activeTab]}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+/* ── Sticky Scroll Platform (desktop) ── */
+function StickyPlatform() {
+  const [activeTab, setActiveTab] = useState<Tab>("Аналитика");
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({ target: containerRef });
+  const scale = useTransform(scrollYProgress, [0, 0.4], [0.55, 1]);
+  const borderRadius = useTransform(scrollYProgress, [0, 0.4], [24, 12]);
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+
+  return (
+    <div ref={containerRef} style={{ height: "300vh" }} className="relative">
+      <div
+        className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"
+        style={{ pointerEvents: "auto" }}
+      >
+        {/* Background fade */}
+        <motion.div
+          className="absolute inset-0 bg-sx-deep"
+          style={{ opacity: bgOpacity }}
+        />
+
+        <motion.div
+          className="relative w-full max-w-5xl mx-auto px-6"
+          style={{ scale, borderRadius }}
+        >
+          <DashboardMockup activeTab={activeTab} setActiveTab={setActiveTab} />
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Main Platform Section ── */
+export default function Platform() {
+  const [activeTab, setActiveTab] = useState<Tab>("Аналитика");
+
+  return (
+    <section id="platform" className="relative">
+      {/* Heading — outside the sticky container */}
+      <div className="relative z-10 pt-24 pb-8 px-6 max-w-7xl mx-auto">
+        <AnimateOnScroll>
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center">
+            Полный контроль в одном интерфейсе
+          </h2>
+        </AnimateOnScroll>
+        <AnimateOnScroll delay={0.1}>
+          <p className="text-sx-muted text-lg md:text-xl text-center mt-4 max-w-2xl mx-auto">
+            Аналитика, обращения, записи — всё видно и управляемо
+          </p>
+        </AnimateOnScroll>
+      </div>
+
+      {/* Desktop: sticky scroll expansion */}
+      <div className="hidden md:block">
+        <StickyPlatform />
+      </div>
+
+      {/* Mobile: normal layout */}
+      <div className="md:hidden px-6 pb-24 max-w-7xl mx-auto">
+        <AnimateOnScroll delay={0.2}>
+          <DashboardMockup activeTab={activeTab} setActiveTab={setActiveTab} />
+        </AnimateOnScroll>
+      </div>
+    </section>
   );
 }

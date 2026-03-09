@@ -1,209 +1,245 @@
 "use client";
+import { motion } from "framer-motion";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 
-const CheckIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <circle cx="10" cy="10" r="10" fill="rgba(1,222,130,0.15)" />
-    <path d="M6 10.5l2.5 2.5 5.5-5.5" stroke="#01DE82" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
+const criteria = [
+  "Скорость ответа",
+  "Доступность",
+  "Стабильность качества",
+  "Запись / перенос / отмена",
+  "Аналитика",
+  "Стоимость",
+  "Масштабируемость",
+];
 
-const NeutralIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <circle cx="10" cy="10" r="10" fill="rgba(122,138,138,0.2)" />
-    <path d="M6 10h8" stroke="#7A8A8A" strokeWidth="2" strokeLinecap="round" />
-  </svg>
-);
-
-const CrossIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <circle cx="10" cy="10" r="10" fill="rgba(255,80,80,0.15)" />
-    <path d="M7 7l6 6M13 7l-6 6" stroke="#FF5050" strokeWidth="2" strokeLinecap="round" />
-  </svg>
-);
-
-type RowIndicator = "good" | "neutral" | "bad";
-
-interface ComparisonRow {
-  criterion: string;
-  chatbot: { text: string; type: RowIndicator };
-  admin: { text: string; type: RowIndicator };
-  servex: { text: string; type: RowIndicator };
+interface CardData {
+  title: string;
+  values: string[];
+  translateY: number;
+  hoverTranslateY: number;
+  scale: number;
+  opacity: number;
+  isServex?: boolean;
 }
 
-const rows: ComparisonRow[] = [
+const cards: CardData[] = [
   {
-    criterion: "Скорость ответа",
-    chatbot: { text: "Мгновенно, но шаблонно", type: "bad" },
-    admin: { text: "Зависит от загрузки", type: "neutral" },
-    servex: { text: "Мгновенно и осмысленно", type: "good" },
+    title: "Обычный чат-бот",
+    values: [
+      "Мгновенно, но шаблонно",
+      "24/7",
+      "Одинаково плохо",
+      "Не умеет",
+      "Нет",
+      "Дёшево",
+      "Ограничена",
+    ],
+    translateY: 40,
+    hoverTranslateY: 30,
+    scale: 0.97,
+    opacity: 0.7,
   },
   {
-    criterion: "Доступность",
-    chatbot: { text: "24/7", type: "neutral" },
-    admin: { text: "Только в смену", type: "bad" },
-    servex: { text: "24/7", type: "good" },
+    title: "Администратор",
+    values: [
+      "Зависит от загрузки",
+      "Только в смену",
+      "Зависит от настроения",
+      "Умеет, но с ошибками",
+      "Нет",
+      "Дорого (зарплата)",
+      "Не масштабируется",
+    ],
+    translateY: 20,
+    hoverTranslateY: 10,
+    scale: 1,
+    opacity: 0.85,
   },
   {
-    criterion: "Стабильность качества",
-    chatbot: { text: "Одинаково плохо", type: "bad" },
-    admin: { text: "Зависит от настроения", type: "neutral" },
-    servex: { text: "Одинаково хорошо", type: "good" },
-  },
-  {
-    criterion: "Запись / перенос / отмена",
-    chatbot: { text: "Не умеет", type: "bad" },
-    admin: { text: "Умеет, но с ошибками", type: "neutral" },
-    servex: { text: "Полный цикл", type: "good" },
-  },
-  {
-    criterion: "Аналитика",
-    chatbot: { text: "Нет", type: "bad" },
-    admin: { text: "Нет", type: "bad" },
-    servex: { text: "Встроенная", type: "good" },
-  },
-  {
-    criterion: "Стоимость",
-    chatbot: { text: "Дёшево", type: "neutral" },
-    admin: { text: "Дорого (зарплата)", type: "bad" },
-    servex: { text: "Предсказуемо", type: "good" },
-  },
-  {
-    criterion: "Масштабируемость",
-    chatbot: { text: "Ограничена", type: "bad" },
-    admin: { text: "Не масштабируется", type: "bad" },
-    servex: { text: "Без ограничений", type: "good" },
+    title: "СЕРВЕКС",
+    values: [
+      "Мгновенно и осмысленно",
+      "24/7",
+      "Одинаково хорошо",
+      "Полный цикл",
+      "Встроенная",
+      "Предсказуемо",
+      "Без ограничений",
+    ],
+    translateY: 0,
+    hoverTranslateY: 0,
+    scale: 1,
+    opacity: 1,
+    isServex: true,
   },
 ];
 
-const columns = ["Обычный чат-бот", "Администратор", "СЕРВЕКС"] as const;
-
-function Indicator({ type }: { type: RowIndicator }) {
-  if (type === "good") return <CheckIcon />;
-  if (type === "neutral") return <NeutralIcon />;
-  return <CrossIcon />;
-}
-
-function CellValue({ text, type }: { text: string; type: RowIndicator }) {
+function ComparisonCard({ card }: { card: CardData }) {
   return (
-    <div className="flex items-start gap-2.5">
-      <span className="mt-0.5 shrink-0">
-        <Indicator type={type} />
-      </span>
-      <span
-        className={
-          type === "good"
-            ? "text-sx-cream"
-            : type === "neutral"
-            ? "text-sx-muted"
-            : "text-sx-muted/70"
-        }
+    <motion.div
+      initial={{ translateY: card.translateY, scale: card.scale, opacity: 0 }}
+      animate={{ translateY: card.translateY, scale: card.scale, opacity: card.opacity }}
+      whileHover={
+        !card.isServex
+          ? {
+              translateY: card.hoverTranslateY,
+              scale: 1,
+              opacity: 1,
+              transition: { duration: 0.3, ease: "easeOut" },
+            }
+          : undefined
+      }
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative flex flex-col rounded-2xl overflow-hidden"
+      style={
+        card.isServex
+          ? {
+              border: "1px solid #01DE82",
+              boxShadow:
+                "0 0 40px rgba(1,222,130,0.12), 0 0 80px rgba(1,222,130,0.06)",
+              background: "#0C1618",
+            }
+          : {
+              border: "1px solid #003D3A",
+              background: "#0C1618",
+            }
+      }
+    >
+      {/* Badge for СЕРВЕКС */}
+      {card.isServex && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+          <span className="block px-4 py-1 rounded-full text-xs font-heading font-bold tracking-widest uppercase bg-sx-accent text-sx-deep">
+            СЕРВЕКС
+          </span>
+        </div>
+      )}
+
+      {/* Card header */}
+      <div
+        className={`px-6 pt-8 pb-5 border-b ${
+          card.isServex ? "border-sx-accent/20" : "border-sx-border/50"
+        }`}
       >
-        {text}
-      </span>
-    </div>
+        <h3
+          className={`font-heading text-lg font-bold ${
+            card.isServex ? "text-sx-accent" : "text-sx-muted"
+          }`}
+        >
+          {card.title}
+        </h3>
+      </div>
+
+      {/* Criteria rows */}
+      <div className="flex flex-col divide-y divide-sx-border/30 flex-1">
+        {criteria.map((criterion, i) => (
+          <div key={criterion} className="px-6 py-3.5 flex flex-col gap-1">
+            <span className="text-sx-muted/60 text-[10px] uppercase tracking-wider font-heading">
+              {criterion}
+            </span>
+            <span
+              className={`text-sm font-medium ${
+                card.isServex ? "text-sx-accent" : "text-sx-muted/70"
+              }`}
+            >
+              {card.values[i]}
+            </span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
   );
 }
 
 export default function Comparison() {
   return (
     <SectionWrapper id="comparison">
-      <AnimateOnScroll>
-        <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center">
-          Почему это не обычный чат-бот
-        </h2>
-      </AnimateOnScroll>
-      <AnimateOnScroll delay={0.1}>
-        <p className="text-sx-muted text-lg md:text-xl text-center mt-4 max-w-2xl mx-auto">
-          СЕРВЕКС — это полноценная система обслуживания, а&nbsp;не&nbsp;автоответчик
-        </p>
-      </AnimateOnScroll>
+      {/* Background ghost "VS" */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
+        aria-hidden="true"
+      >
+        <span
+          className="font-heading font-black text-sx-cream"
+          style={{ fontSize: "12vw", opacity: 0.03, letterSpacing: "0.1em" }}
+        >
+          VS
+        </span>
+      </div>
 
-      {/* Desktop table */}
-      <AnimateOnScroll delay={0.2}>
-        <div className="hidden lg:block mt-16 bg-sx-card border border-sx-border rounded-2xl overflow-hidden">
-          {/* Header row */}
-          <div className="grid grid-cols-4 border-b border-sx-border">
-            <div className="p-5 font-heading font-semibold text-sx-muted text-sm uppercase tracking-wider">
-              Критерий
-            </div>
-            {columns.map((col, i) => (
-              <div
-                key={col}
-                className={`p-5 font-heading font-semibold text-sm uppercase tracking-wider ${
-                  i === 2
-                    ? "text-sx-accent bg-sx-accent/[0.04]"
-                    : "text-sx-muted"
-                }`}
-              >
-                {col}
-              </div>
-            ))}
-          </div>
+      <div className="relative z-10">
+        <AnimateOnScroll>
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-left">
+            Почему это не обычный чат-бот
+          </h2>
+        </AnimateOnScroll>
+        <AnimateOnScroll delay={0.1}>
+          <p className="text-sx-muted text-lg md:text-xl mt-4 max-w-2xl">
+            СЕРВЕКС — это полноценная система обслуживания, а&nbsp;не&nbsp;автоответчик
+          </p>
+        </AnimateOnScroll>
 
-          {/* Data rows */}
-          {rows.map((row, idx) => (
-            <div
-              key={row.criterion}
-              className={`grid grid-cols-4 ${
-                idx < rows.length - 1 ? "border-b border-sx-border/50" : ""
-              } transition-colors hover:bg-sx-accent/[0.02]`}
-            >
-              <div className="p-5 font-heading text-sx-cream font-medium text-sm">
-                {row.criterion}
-              </div>
-              <div className="p-5 text-sm">
-                <CellValue {...row.chatbot} />
-              </div>
-              <div className="p-5 text-sm">
-                <CellValue {...row.admin} />
-              </div>
-              <div className="p-5 text-sm bg-sx-accent/[0.04] border-l border-r border-sx-accent/10 shadow-[inset_0_0_30px_rgba(1,222,130,0.03)]">
-                <CellValue {...row.servex} />
-              </div>
-            </div>
+        {/* Desktop: 3 elevated cards */}
+        <div className="hidden lg:grid grid-cols-3 gap-5 mt-20 pb-12 items-start">
+          {cards.map((card) => (
+            <ComparisonCard key={card.title} card={card} />
           ))}
         </div>
-      </AnimateOnScroll>
 
-      {/* Mobile cards */}
-      <div className="lg:hidden mt-12 space-y-4">
-        {rows.map((row, idx) => (
-          <AnimateOnScroll key={row.criterion} delay={0.15 + idx * 0.05}>
-            <div className="bg-sx-card border border-sx-border rounded-xl p-5">
-              <h4 className="font-heading text-sx-cream font-semibold text-sm mb-4">
-                {row.criterion}
-              </h4>
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sx-muted/60 text-xs uppercase tracking-wider">
-                    {columns[0]}
-                  </span>
-                  <div className="mt-1 text-sm">
-                    <CellValue {...row.chatbot} />
-                  </div>
+        {/* Mobile: stacked */}
+        <div className="lg:hidden mt-12 space-y-6">
+          {[...cards].reverse().map((card, i) => (
+            <AnimateOnScroll key={card.title} delay={0.1 * i}>
+              <div
+                className="rounded-2xl overflow-hidden"
+                style={
+                  card.isServex
+                    ? {
+                        border: "1px solid #01DE82",
+                        boxShadow:
+                          "0 0 30px rgba(1,222,130,0.10), 0 0 60px rgba(1,222,130,0.05)",
+                        background: "#0C1618",
+                      }
+                    : {
+                        border: "1px solid #003D3A",
+                        background: "#0C1618",
+                        opacity: card.opacity,
+                      }
+                }
+              >
+                <div
+                  className={`px-5 py-4 border-b ${
+                    card.isServex ? "border-sx-accent/20" : "border-sx-border/50"
+                  }`}
+                >
+                  <h3
+                    className={`font-heading text-base font-bold ${
+                      card.isServex ? "text-sx-accent" : "text-sx-muted"
+                    }`}
+                  >
+                    {card.title}
+                  </h3>
                 </div>
-                <div>
-                  <span className="text-sx-muted/60 text-xs uppercase tracking-wider">
-                    {columns[1]}
-                  </span>
-                  <div className="mt-1 text-sm">
-                    <CellValue {...row.admin} />
-                  </div>
-                </div>
-                <div className="bg-sx-accent/[0.05] -mx-5 px-5 py-3 border-t border-sx-accent/10 rounded-b-xl mt-3">
-                  <span className="text-sx-accent text-xs uppercase tracking-wider font-semibold">
-                    {columns[2]}
-                  </span>
-                  <div className="mt-1 text-sm">
-                    <CellValue {...row.servex} />
-                  </div>
+                <div className="divide-y divide-sx-border/20">
+                  {criteria.map((criterion, ci) => (
+                    <div key={criterion} className="px-5 py-3 flex items-center justify-between gap-4">
+                      <span className="text-sx-muted/60 text-xs font-heading">
+                        {criterion}
+                      </span>
+                      <span
+                        className={`text-xs font-medium text-right ${
+                          card.isServex ? "text-sx-accent" : "text-sx-muted/60"
+                        }`}
+                      >
+                        {card.values[ci]}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
-          </AnimateOnScroll>
-        ))}
+            </AnimateOnScroll>
+          ))}
+        </div>
       </div>
     </SectionWrapper>
   );
