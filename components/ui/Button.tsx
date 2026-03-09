@@ -9,6 +9,7 @@ type ButtonProps = {
   onClick?: () => void;
   className?: string;
   size?: "default" | "lg";
+  disabled?: boolean;
 };
 
 export default function Button({
@@ -18,6 +19,7 @@ export default function Button({
   onClick,
   className = "",
   size = "default",
+  disabled = false,
 }: ButtonProps) {
   const base =
     "inline-flex items-center justify-center font-heading font-medium rounded-lg transition-all duration-200 cursor-pointer";
@@ -31,7 +33,8 @@ export default function Button({
     secondary:
       "border border-sx-border text-sx-cream hover:border-sx-accent hover:text-sx-accent",
   };
-  const cls = `${base} ${sizes[size]} ${variants[variant]} ${className}`;
+  const disabledCls = disabled ? "opacity-50 cursor-not-allowed pointer-events-none" : "";
+  const cls = `${base} ${sizes[size]} ${variants[variant]} ${disabledCls} ${className}`;
 
   const MotionComp = motion.span;
 
@@ -68,8 +71,9 @@ export default function Button({
     <motion.button
       onClick={onClick}
       className={cls}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      disabled={disabled}
+      whileHover={disabled ? undefined : { scale: 1.02 }}
+      whileTap={disabled ? undefined : { scale: 0.98 }}
     >
       {children}
     </motion.button>

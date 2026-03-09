@@ -11,13 +11,13 @@ const periods = [
   { label: "6 мес", months: 6 },
 ] as const;
 
-const agentPricing: Record<number, { price: number; savings?: string }> = {
+const pricingData: Record<number, { price: number; savings?: string }> = {
   1: { price: 25000 },
-  3: { price: 22000, savings: "9 000 ₽ за период" },
-  6: { price: 21000, savings: "24 000 ₽ за период" },
+  3: { price: 22000, savings: "Экономия 9 000 ₽" },
+  6: { price: 21000, savings: "Экономия 24 000 ₽" },
 };
 
-const agentFeatures = [
+const nachalFeatures = [
   "Обработка обращений 24/7",
   "Запись, перенос, отмена",
   "Аналитика и отчёты",
@@ -26,20 +26,20 @@ const agentFeatures = [
   "Контроль качества",
 ];
 
-const agentNotes = [
+const nachalNotes = [
   "Дешевле штатного администратора",
   "Прозрачные условия",
   "Без скрытых платежей",
-  "Запуск от 1 дня",
+  "Запуск за 1 день",
 ];
 
-const voiceFeatures = [
+const razvitieFeatures = [
   "Приём входящих звонков",
   "Запись по телефону",
   "Переключение на оператора",
 ];
 
-const enterpriseFeatures = [
+const masshtabFeatures = [
   "Мультилокационная поддержка",
   "Индивидуальная настройка",
   "Выделенный менеджер",
@@ -72,11 +72,11 @@ function formatPrice(n: number) {
 export default function Pricing() {
   const { openBooking } = useDemoBooking();
   const [selectedPeriod, setSelectedPeriod] = useState(3);
-  const pricing = agentPricing[selectedPeriod];
+  const pricing = pricingData[selectedPeriod];
 
   return (
     <section id="pricing" className="py-24 md:py-32 px-6 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+      <div className="section-container">
         <AnimateOnScroll>
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-sx-cream text-center">
             Тарифы
@@ -111,175 +111,145 @@ export default function Pricing() {
           </div>
         </AnimateOnScroll>
 
-        {/* Mobile: stacked cards (Agent first) */}
-        <div className="lg:hidden mt-14 space-y-6">
-          {/* Agent card — mobile */}
-          <AgentCard
-            pricing={pricing}
-            selectedPeriod={selectedPeriod}
-            openBooking={openBooking}
-          />
-          {/* Enterprise card — mobile */}
-          <EnterpriseCard openBooking={openBooking} />
-          {/* Voice Agent card — mobile */}
-          <VoiceAgentCard />
-        </div>
+        {/* 3 cards in one row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-14 items-stretch">
+          {/* Card 1: Начало */}
+          <AnimateOnScroll delay={0}>
+            <div className="h-full bg-sx-card border border-sx-accent/50 rounded-2xl p-8 shadow-[0_0_40px_rgba(0,240,144,0.1)] flex flex-col">
+              <h3 className="font-heading text-2xl font-bold text-sx-cream">
+                Начало
+              </h3>
+              <p className="text-sx-muted text-sm mt-1">
+                Цифровой администратор для вашего бизнеса
+              </p>
 
-        {/* Desktop: sticky stacking cards */}
-        <div className="hidden lg:block mt-14 min-h-[200vh] relative">
-          {/* Card 1 — Voice Agent (appears first, gets pushed under) */}
-          <div className="sticky top-24 z-10 pb-4">
-            <VoiceAgentCard />
-          </div>
+              {/* Price */}
+              <div className="mt-6">
+                <div className="flex items-baseline gap-2">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={selectedPeriod}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                      className="font-heading text-4xl font-extrabold text-sx-cream"
+                    >
+                      {formatPrice(pricing.price)} &#8381;
+                    </motion.span>
+                  </AnimatePresence>
+                  <span className="text-sx-muted text-sm">/ мес</span>
+                </div>
+                <AnimatePresence mode="wait">
+                  {pricing.savings && (
+                    <motion.div
+                      key={pricing.savings}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-2"
+                    >
+                      <span className="bg-sx-accent/10 text-sx-accent text-sm rounded-full px-4 py-1 inline-block">
+                        {pricing.savings}
+                      </span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-          {/* Card 2 — Enterprise (appears second) */}
-          <div className="sticky top-24 z-20 pb-4">
-            <EnterpriseCard openBooking={openBooking} />
-          </div>
+              {/* Features */}
+              <ul className="mt-6 space-y-3">
+                {nachalFeatures.map((f) => (
+                  <li key={f} className="flex items-start gap-3">
+                    <CheckIcon />
+                    <span className="text-sx-cream text-sm">{f}</span>
+                  </li>
+                ))}
+              </ul>
 
-          {/* Card 3 — Agent (appears last, sits on TOP) */}
-          <div className="sticky top-24 z-30 pb-4">
-            <AgentCard
-              pricing={pricing}
-              selectedPeriod={selectedPeriod}
-              openBooking={openBooking}
-            />
-          </div>
+              {/* Notes */}
+              <div className="mt-6 pt-6 border-t border-sx-border space-y-2">
+                {nachalNotes.map((n) => (
+                  <p key={n} className="text-sm text-sx-muted">
+                    {n}
+                  </p>
+                ))}
+              </div>
+
+              <div className="mt-auto pt-8">
+                <Button onClick={openBooking} className="w-full">
+                  Записаться на демо
+                </Button>
+              </div>
+            </div>
+          </AnimateOnScroll>
+
+          {/* Card 2: Развитие */}
+          <AnimateOnScroll delay={0.1}>
+            <div className="h-full bg-sx-card border border-sx-border rounded-2xl p-8 flex flex-col">
+              <div className="flex items-center gap-3">
+                <h3 className="font-heading text-2xl font-bold text-sx-cream">
+                  Развитие
+                </h3>
+                <span className="bg-sx-accent/10 text-sx-accent text-xs px-3 py-1 rounded-full">
+                  Скоро
+                </span>
+              </div>
+              <p className="text-sx-muted text-sm mt-1">
+                Голосовой ассистент для входящих звонков
+              </p>
+
+              <ul className="mt-6 space-y-3">
+                {razvitieFeatures.map((f) => (
+                  <li key={f} className="flex items-start gap-3">
+                    <CheckIcon muted />
+                    <span className="text-sx-muted text-sm">{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-auto pt-8">
+                <Button variant="secondary" disabled className="w-full">
+                  Узнать первым
+                </Button>
+              </div>
+            </div>
+          </AnimateOnScroll>
+
+          {/* Card 3: Масштабирование */}
+          <AnimateOnScroll delay={0.2}>
+            <div className="h-full bg-sx-card border border-sx-border rounded-2xl p-8 flex flex-col">
+              <h3 className="font-heading text-2xl font-bold text-sx-cream">
+                Масштабирование
+              </h3>
+              <p className="text-sx-muted text-sm mt-1">
+                Для сетей и крупных компаний
+              </p>
+
+              <div className="mt-6">
+                <span className="font-heading text-3xl font-bold text-sx-cream">
+                  По запросу
+                </span>
+              </div>
+
+              <ul className="mt-6 space-y-3">
+                {masshtabFeatures.map((f) => (
+                  <li key={f} className="flex items-start gap-3">
+                    <CheckIcon />
+                    <span className="text-sx-cream text-sm">{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-auto pt-8">
+                <Button variant="secondary" onClick={openBooking} className="w-full">
+                  Связаться
+                </Button>
+              </div>
+            </div>
+          </AnimateOnScroll>
         </div>
       </div>
     </section>
-  );
-}
-
-function AgentCard({
-  pricing,
-  selectedPeriod,
-  openBooking,
-}: {
-  pricing: { price: number; savings?: string };
-  selectedPeriod: number;
-  openBooking: () => void;
-}) {
-  return (
-    <div className="max-w-xl mx-auto bg-sx-card border border-sx-accent/50 rounded-2xl p-8 md:p-10 shadow-[0_0_40px_rgba(0,240,144,0.1)]">
-      <h3 className="font-heading text-2xl font-bold text-sx-cream">Агент</h3>
-      <p className="text-sx-muted text-sm mt-1">
-        Цифровой администратор для вашего бизнеса
-      </p>
-
-      {/* Price */}
-      <div className="mt-6">
-        <div className="flex items-baseline gap-2">
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={selectedPeriod}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="font-heading text-4xl md:text-5xl font-extrabold text-sx-cream"
-            >
-              {formatPrice(pricing.price)} &#8381;
-            </motion.span>
-          </AnimatePresence>
-          <span className="text-sx-muted text-sm">/ мес</span>
-        </div>
-        <AnimatePresence mode="wait">
-          {pricing.savings && (
-            <motion.div
-              key={pricing.savings}
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-2"
-            >
-              <span className="bg-sx-accent/10 text-sx-accent text-sm rounded-full px-4 py-1 inline-block">
-                {pricing.savings}
-              </span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Features */}
-      <ul className="mt-6 space-y-3">
-        {agentFeatures.map((f) => (
-          <li key={f} className="flex items-start gap-3">
-            <CheckIcon />
-            <span className="text-sx-cream text-sm">{f}</span>
-          </li>
-        ))}
-      </ul>
-
-      {/* Notes */}
-      <div className="mt-6 pt-6 border-t border-sx-border space-y-2">
-        {agentNotes.map((n) => (
-          <p key={n} className="text-sm text-sx-muted">{n}</p>
-        ))}
-      </div>
-
-      <div className="mt-8">
-        <Button onClick={openBooking} className="w-full">
-          Записаться на демо
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-function VoiceAgentCard() {
-  return (
-    <div className="max-w-xl mx-auto bg-sx-card border border-sx-border rounded-2xl p-8 md:p-10 shadow-2xl">
-      <div className="flex items-center gap-3">
-        <h3 className="font-heading text-2xl font-bold text-sx-cream">
-          Голосовой агент
-        </h3>
-        <span className="bg-sx-accent/10 text-sx-accent text-xs px-3 py-1 rounded-full">
-          Скоро
-        </span>
-      </div>
-      <p className="text-sx-muted text-sm mt-1">
-        Голосовой ассистент для входящих звонков
-      </p>
-
-      <ul className="mt-6 space-y-3">
-        {voiceFeatures.map((f) => (
-          <li key={f} className="flex items-start gap-3">
-            <CheckIcon muted />
-            <span className="text-sx-muted text-sm">{f}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function EnterpriseCard({ openBooking }: { openBooking: () => void }) {
-  return (
-    <div className="max-w-xl mx-auto bg-sx-card border border-sx-border rounded-2xl p-8 md:p-10 shadow-2xl">
-      <h3 className="font-heading text-2xl font-bold text-sx-cream">Enterprise</h3>
-      <p className="text-sx-muted text-sm mt-1">Для сетей и крупных компаний</p>
-
-      <div className="mt-6">
-        <span className="font-heading text-3xl font-bold text-sx-cream">
-          По запросу
-        </span>
-      </div>
-
-      <ul className="mt-6 space-y-3">
-        {enterpriseFeatures.map((f) => (
-          <li key={f} className="flex items-start gap-3">
-            <CheckIcon />
-            <span className="text-sx-cream text-sm">{f}</span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-8">
-        <Button variant="secondary" onClick={openBooking} className="w-full">
-          Связаться
-        </Button>
-      </div>
-    </div>
   );
 }
