@@ -1,27 +1,25 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans } from "next/font/google";
+import { Unbounded, Montserrat } from "next/font/google";
 import dynamic from "next/dynamic";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { DemoBookingProvider } from "@/components/ui/DemoBookingContext";
 import DemoBooking from "@/components/ui/DemoBooking";
-import PageWatermark from "@/components/ui/PageWatermark";
-import NoiseGrain from "@/components/ui/NoiseGrain";
 
 const CustomCursor = dynamic(() => import("@/components/ui/CustomCursor"), {
   ssr: false,
 });
 
-const syne = Syne({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-syne",
-  weight: ["400", "500", "600", "700", "800"],
+const unbounded = Unbounded({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  variable: "--font-unbounded",
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-const dmSans = DM_Sans({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-dm-sans",
+const montserrat = Montserrat({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  variable: "--font-montserrat",
   weight: ["400", "500", "600", "700"],
 });
 
@@ -48,12 +46,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${syne.variable} ${dmSans.variable} scroll-smooth`}>
+    <html lang="ru" className={`${unbounded.variable} ${montserrat.variable} scroll-smooth`}>
       <body className="bg-sx-deep text-sx-cream font-body">
         <DemoBookingProvider>
           <CustomCursor />
-          <NoiseGrain />
-          <PageWatermark />
           <Header />
           {children}
           <Footer />

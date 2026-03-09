@@ -42,13 +42,13 @@ export default function CustomCursor() {
     const onMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (target.closest('a, button, [role="button"], input, textarea, select, .cursor-pointer')) {
-        ringRef.current?.classList.add("scale-150", "opacity-60");
-        dotRef.current?.classList.add("scale-0");
+        ringRef.current?.classList.add("!border-white", "scale-125");
+        dotRef.current?.classList.add("!bg-white");
       }
     };
     const onMouseOut = () => {
-      ringRef.current?.classList.remove("scale-150", "opacity-60");
-      dotRef.current?.classList.remove("scale-0");
+      ringRef.current?.classList.remove("!border-white", "scale-125");
+      dotRef.current?.classList.remove("!bg-white");
     };
 
     window.addEventListener("mousemove", onMouseMove);

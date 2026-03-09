@@ -12,6 +12,14 @@
   body {
     @apply bg-sx-deep text-sx-cream font-body;
     cursor: none;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 240, 144, 0.03), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0, 240, 144, 0.02), transparent 60%),
+      #050A0A;
+  }
+
+  * {
+    cursor: none !important;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -29,17 +37,22 @@
   }
 }
 
-/* Noise grain overlay */
-.noise-overlay {
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+/* Section container for 70% width */
+.section-container {
+  @apply max-w-[1200px] mx-auto px-6;
+  width: 70%;
+}
+
+@media (max-width: 1024px) {
+  .section-container {
+    width: 90%;
+  }
+}
+
+@media (max-width: 640px) {
+  .section-container {
+    width: 95%;
+  }
 }
 
 /* Glitch hover for CTAs */
