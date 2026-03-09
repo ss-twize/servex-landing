@@ -114,6 +114,11 @@ export default function Integrations() {
             Интеграции
           </h2>
         </AnimateOnScroll>
+        <AnimateOnScroll delay={0.05}>
+          <p className="text-sx-secondary text-center mt-3 mb-10 text-base max-w-xl mx-auto">
+            СЕРВЕКС работает как отдельная система или интегрируется с существующими сервисами.
+          </p>
+        </AnimateOnScroll>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {integrations.map((item, i) => (
