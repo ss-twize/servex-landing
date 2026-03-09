@@ -56,7 +56,7 @@ export default function FinalCTA() {
 
           <AnimateOnScroll delay={0.35}>
             <p className="mt-10 text-sx-muted text-sm">
-              Запуск от 1 дня · Без скрытых платежей · Бесплатная демонстрация
+              Запуск за 1 день · Без скрытых платежей · Бесплатная демонстрация
             </p>
           </AnimateOnScroll>
         </div>
