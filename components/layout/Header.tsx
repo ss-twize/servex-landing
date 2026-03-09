@@ -6,31 +6,24 @@ import Link from "next/link";
 const LOGO_ID = "СЕРВЕКС";
 
 const navItems = [
-  { name: "Продукт", url: "#solution" },
-  { name: "Тарифы", url: "#pricing" },
-  { name: "Запуск", url: "#launch" },
-  { name: "Вопросы", url: "#faq" },
-  { name: "Контакты", url: "/contacts" },
+  { name: "Решение",      url: "#solution"  },
+  { name: "Тарифы",       url: "#pricing"   },
+  { name: "Подключение",  url: "#demo"      },
+  { name: "Контакты",     url: "#footer"    },
 ];
 
-/*
-  Map every section ID (in page scroll order) to the nav item it belongs to.
-  Sections between two nav anchors highlight the preceding nav item.
-*/
+/* Map every section ID (page order) → nav item that should be highlighted */
 const sectionToNav: { id: string; nav: string }[] = [
-  { id: "problem", nav: "Продукт" },
-  { id: "calculator", nav: "Продукт" },
-  { id: "solution", nav: "Продукт" },
-  { id: "comparison", nav: "Продукт" },
-  { id: "system", nav: "Продукт" },
-  { id: "ecosystem", nav: "Продукт" },
-  { id: "platform", nav: "Продукт" },
-  { id: "integrations", nav: "Продукт" },
-  { id: "for-whom", nav: "Продукт" },
-  { id: "pricing", nav: "Тарифы" },
-  { id: "launch", nav: "Запуск" },
-  { id: "faq", nav: "Вопросы" },
-  { id: "demo", nav: "Вопросы" },
+  { id: "problem",     nav: "Решение"     },
+  { id: "solution",    nav: "Решение"     },
+  { id: "system",      nav: "Решение"     },
+  { id: "platform",    nav: "Решение"     },
+  { id: "ecosystem",   nav: "Решение"     },
+  { id: "integrations",nav: "Решение"     },
+  { id: "calculator",  nav: "Решение"     },
+  { id: "comparison",  nav: "Решение"     },
+  { id: "pricing",     nav: "Тарифы"      },
+  { id: "demo",        nav: "Подключение" },
 ];
 
 function TubelightGlow() {
@@ -74,7 +67,6 @@ export default function Header() {
     const offset = 200;
     let found = false;
 
-    // Walk backwards — first section whose top is above the offset wins
     for (let i = sectionToNav.length - 1; i >= 0; i--) {
       const el = document.getElementById(sectionToNav[i].id);
       if (el && el.getBoundingClientRect().top <= offset) {
@@ -84,9 +76,7 @@ export default function Header() {
       }
     }
 
-    if (!found) {
-      setActiveTab(LOGO_ID);
-    }
+    if (!found) setActiveTab(LOGO_ID);
   }, []);
 
   useEffect(() => {
@@ -96,9 +86,14 @@ export default function Header() {
   }, [updateActiveOnScroll]);
 
   const handleClick = (e: React.MouseEvent, item: (typeof navItems)[0]) => {
+    e.preventDefault();
     setActiveTab(item.name);
-    if (item.url.startsWith("#")) {
-      e.preventDefault();
+
+    if (item.url === "#footer") {
+      // Scroll to footer
+      const footer = document.querySelector("footer");
+      if (footer) footer.scrollIntoView({ behavior: "smooth" });
+    } else if (item.url.startsWith("#")) {
       const el = document.querySelector(item.url);
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }
@@ -118,7 +113,7 @@ export default function Header() {
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
       <nav className="flex items-center gap-1 bg-sx-deep/60 border border-sx-border/50 backdrop-blur-xl py-1.5 px-1.5 rounded-full shadow-lg">
-        {/* Logo — with tubelight when at hero */}
+        {/* Logo */}
         <Link
           href="/"
           onClick={handleLogoClick}
