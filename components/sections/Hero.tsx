@@ -148,9 +148,9 @@ export default function Hero() {
               height: "clamp(420px, 48vw, 680px)",
               overflow: "visible",
             }}
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={stage >= 2 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.85 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: stage >= 2 ? 1 : 0 }}
+            transition={{ duration: 0.5 }}
           >
             <div className="absolute inset-0 -m-12 bg-[radial-gradient(circle,rgba(0,240,144,0.1),transparent_70%)] blur-2xl" />
             <HeroOrb className="w-full h-full" />
