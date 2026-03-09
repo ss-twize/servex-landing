@@ -27,7 +27,7 @@ export default function FinalCTA() {
         <div className="relative z-10 section-container text-center">
           <AnimateOnScroll>
             <h2 className="text-4xl md:text-7xl font-heading font-extrabold text-sx-cream leading-tight">
-              Хватит терять клиентов и выручку
+              <span className="text-sx-hot underline decoration-sx-hot">Хватит терять</span> клиентов и выручку
             </h2>
           </AnimateOnScroll>
 
