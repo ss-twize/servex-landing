@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Button from "@/components/ui/Button";
+import { useDemoBooking } from "@/components/ui/DemoBookingContext";
 
 /* Lazy-load the 3D orb so it doesn't block initial paint */
 const HeroOrb = dynamic(() => import("@/components/three/HeroOrb"), {
@@ -16,6 +17,7 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function Hero() {
+  const { openBooking } = useDemoBooking();
   const scrollToSection = (id: string) => {
     const el = document.querySelector(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -86,7 +88,7 @@ export default function Hero() {
             <Button
               size="lg"
               variant="primary"
-              onClick={() => scrollToSection("#pricing")}
+              onClick={openBooking}
             >
               Записаться на демо
             </Button>

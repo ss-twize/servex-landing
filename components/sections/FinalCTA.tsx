@@ -2,8 +2,10 @@
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Button from "@/components/ui/Button";
+import { useDemoBooking } from "@/components/ui/DemoBookingContext";
 
 export default function FinalCTA() {
+  const { openBooking } = useDemoBooking();
   return (
     <section
       id="demo"
@@ -29,7 +31,7 @@ export default function FinalCTA() {
 
         <AnimateOnScroll delay={0.2}>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" href="#demo">
+            <Button size="lg" onClick={openBooking}>
               Записаться на демо
             </Button>
             <Button

@@ -7,7 +7,7 @@ const productLinks = [
 ];
 
 const companyLinks = [
-  { label: "Контакты", href: "#contacts" },
+  { label: "Контакты", href: "/contacts" },
   { label: "О нас", href: "#solution" },
 ];
 
@@ -77,12 +77,12 @@ export default function Footer() {
             <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.href}>
-                  <a
+                  <Link
                     href={link.href}
                     className="font-body text-sm text-sx-muted hover:text-sx-cream transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

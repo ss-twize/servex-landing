@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Button from "@/components/ui/Button";
+import { useDemoBooking } from "@/components/ui/DemoBookingContext";
 
 const periods = [
   { label: "1 мес", months: 1 },
@@ -70,6 +71,7 @@ function formatPrice(n: number) {
 }
 
 export default function Pricing() {
+  const { openBooking } = useDemoBooking();
   const [selectedPeriod, setSelectedPeriod] = useState(3);
   const pricing = agentPricing[selectedPeriod];
 
@@ -180,7 +182,7 @@ export default function Pricing() {
             </div>
 
             <div className="mt-8">
-              <Button href="#demo" className="w-full">
+              <Button onClick={openBooking} className="w-full">
                 Записаться на демо
               </Button>
             </div>
@@ -247,7 +249,7 @@ export default function Pricing() {
             </ul>
 
             <div className="mt-8">
-              <Button variant="secondary" href="#demo" className="w-full">
+              <Button variant="secondary" onClick={openBooking} className="w-full">
                 Связаться
               </Button>
             </div>
