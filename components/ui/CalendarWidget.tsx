@@ -8,6 +8,9 @@ const MONTH_NAMES = [
   "июля", "августа", "сентября", "октября", "ноября", "декабря",
 ];
 
+const TELEGRAM_BOT_USERNAME =
+  (process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "servex_bot").replace(/^@/, "");
+
 const TIME_SLOTS = [
   "10:00", "11:00", "12:00", "13:00", "14:00",
   "15:00", "16:00", "17:00", "18:00",
@@ -62,6 +65,9 @@ export default function CalendarWidget({ onClose }: { onClose: () => void }) {
     if (!form.name.trim() || !form.phone.trim()) return;
     setStep(4);
   };
+
+  const confirmCode = `${selectedDate ? selectedDate.toISOString().slice(0, 10) : "date"}-${selectedTime || "time"}-${form.phone.replace(/\D/g, "").slice(-4) || "0000"}`;
+  const tgUrl = `https://t.me/${TELEGRAM_BOT_USERNAME}?start=${encodeURIComponent(confirmCode)}`;
 
   return (
     <div className="min-h-[360px] flex flex-col">
@@ -282,9 +288,17 @@ export default function CalendarWidget({ onClose }: { onClose: () => void }) {
               <span className="text-sx-cream font-medium">{selectedTime}</span>
             </div>
 
+            <a
+              href={tgUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 px-8 py-2.5 rounded-lg font-heading font-medium text-sm bg-sx-accent text-sx-deep hover:bg-sx-accent-hover transition-all cursor-pointer"
+            >
+              Подтвердить в Telegram
+            </a>
             <button
               onClick={onClose}
-              className="mt-8 px-8 py-2.5 rounded-lg font-heading font-medium text-sm bg-sx-accent text-sx-deep hover:bg-sx-accent-hover transition-all cursor-pointer"
+              className="mt-3 px-8 py-2.5 rounded-lg font-heading font-medium text-sm bg-sx-deep text-sx-cream hover:border-sx-accent/50 border border-sx-border transition-all cursor-pointer"
             >
               Закрыть
             </button>
