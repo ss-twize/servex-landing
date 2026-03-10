@@ -97,7 +97,7 @@ export default function CalendarWidget({ onClose }: { onClose: () => void }) {
     setStep(4);
   };
 
-  const tgUrl = `https://t.me/${TELEGRAM_BOT_USERNAME}?start=${confirmCode}`;
+  const tgUrl = `https://t.me/${BOT_USERNAME}?start=${confirmCode}`;
 
   return (
     <div className="min-h-[360px] flex flex-col">
