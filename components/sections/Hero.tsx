@@ -126,7 +126,7 @@ export default function Hero() {
                 Записаться на демо
               </Button>
               <Button size="lg" variant="secondary" href="https://t.me/servex_bot">
-                Написать в Telegram
+                Задать вопрос
               </Button>
             </motion.div>
 
