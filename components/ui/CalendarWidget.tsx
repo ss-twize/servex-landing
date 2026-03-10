@@ -14,7 +14,7 @@ const TIME_SLOTS = [
 ];
 
 const BOT_USERNAME =
-  process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "servex_demo_bot";
+  process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "servex_support_bot";
 
 function getNext14Weekdays(): Date[] {
   const dates: Date[] = [];
@@ -97,7 +97,7 @@ export default function CalendarWidget({ onClose }: { onClose: () => void }) {
     setStep(4);
   };
 
-  const tgUrl = `https://t.me/${BOT_USERNAME}?start=${confirmCode}`;
+  const tgUrl = `https://t.me/${servex_support_bot}?start=${confirmCode}`;
 
   return (
     <div className="min-h-[360px] flex flex-col">
