@@ -119,7 +119,7 @@ export default function CalendarWidget({ onClose }: { onClose: () => void }) {
                 return (
                   <button
                     key={i}
-                    onClick={() => setSelectedDate(d)}
+                    onClick={() => { setSelectedDate(d); setStep(2); }}
                     className={`flex flex-col items-center py-2.5 px-1 rounded-lg text-sm transition-all cursor-pointer border ${
                       isSelected
                         ? "bg-sx-accent text-sx-deep border-sx-accent font-semibold"
@@ -131,19 +131,6 @@ export default function CalendarWidget({ onClose }: { onClose: () => void }) {
                   </button>
                 );
               })}
-            </div>
-            <div className="mt-auto pt-6 flex justify-end">
-              <button
-                onClick={() => selectedDate && setStep(2)}
-                disabled={!selectedDate}
-                className={`px-6 py-2.5 rounded-lg font-heading font-medium text-sm transition-all cursor-pointer ${
-                  selectedDate
-                    ? "bg-sx-accent text-sx-deep hover:bg-sx-accent-hover"
-                    : "bg-sx-border text-sx-muted cursor-not-allowed"
-                }`}
-              >
-                Далее
-              </button>
             </div>
           </motion.div>
         )}
@@ -165,7 +152,7 @@ export default function CalendarWidget({ onClose }: { onClose: () => void }) {
               {TIME_SLOTS.map((t) => (
                 <button
                   key={t}
-                  onClick={() => setSelectedTime(t)}
+                  onClick={() => { setSelectedTime(t); setStep(3); }}
                   className={`py-2.5 rounded-lg text-sm transition-all cursor-pointer border ${
                     selectedTime === t
                       ? "bg-sx-accent text-sx-deep border-sx-accent font-semibold"
@@ -176,20 +163,9 @@ export default function CalendarWidget({ onClose }: { onClose: () => void }) {
                 </button>
               ))}
             </div>
-            <div className="mt-auto pt-6 flex justify-between">
-              <button onClick={() => setStep(1)} className="px-6 py-2.5 rounded-lg font-heading font-medium text-sm text-sx-muted hover:text-sx-cream transition-colors cursor-pointer">
-                Назад
-              </button>
-              <button
-                onClick={() => selectedTime && setStep(3)}
-                disabled={!selectedTime}
-                className={`px-6 py-2.5 rounded-lg font-heading font-medium text-sm transition-all cursor-pointer ${
-                  selectedTime
-                    ? "bg-sx-accent text-sx-deep hover:bg-sx-accent-hover"
-                    : "bg-sx-border text-sx-muted cursor-not-allowed"
-                }`}
-              >
-                Далее
+            <div className="mt-auto pt-4 flex justify-start">
+              <button onClick={() => setStep(1)} className="px-4 py-2 rounded-lg font-heading font-medium text-sm text-sx-muted hover:text-sx-cream transition-colors cursor-pointer">
+                ← Назад
               </button>
             </div>
           </motion.div>
