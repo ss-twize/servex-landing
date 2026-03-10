@@ -14,8 +14,8 @@ const TIME_SLOTS = [
   "15:00", "16:00", "17:00", "18:00",
 ];
 
-const BOT_USERNAME =
-  process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "servex_support_bot";
+const CONFIRM_CONTACT =
+  process.env.NEXT_PUBLIC_TELEGRAM_CONTACT || "ss_bizness";
 
 function getNext14Weekdays(): Date[] {
   const dates: Date[] = [];
@@ -149,7 +149,8 @@ export default function CalendarWidget({ onClose }: { onClose: () => void }) {
     setSubmitError("");
   }
 
-  const tgUrl = `https://t.me/${BOT_USERNAME}?start=${confirmCode}`;
+  const tgMessage = `Подтверждаю запись на демо\nКод: ${confirmCode}`;
+  const tgUrl = `https://t.me/${CONFIRM_CONTACT}?text=${encodeURIComponent(tgMessage)}`;
 
   return (
     <div className="min-h-[360px] flex flex-col">
