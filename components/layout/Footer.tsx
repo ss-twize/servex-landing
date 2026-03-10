@@ -126,7 +126,7 @@ export default function Footer() {
             &copy; 2026 СЕРВЕКС. Все права защищены.
           </p>
           <p className="font-body text-xs text-sx-muted text-center md:text-right">
-            ИП Иванов И.И. · ИНН 123456789012 · ОГРНИП 123456789012345
+            ИП Сидоренко Александр Сергеевич · ИНН: 540431273072 · ОГРН: 324547600016361
           </p>
         </div>
       </div>
